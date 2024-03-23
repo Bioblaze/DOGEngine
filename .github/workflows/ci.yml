@@ -40,6 +40,15 @@ jobs:
         run: |
           bootstrap-vcpkg
           vcpkg integrate install
-          
+
       - name: Build app for release
         run: msbuild DOGEngine\DOGEngine.vcxproj -t:rebuild -verbosity:diag -property:Configuration=Release
+
+      - uses: manleydev/butler-publish-itchio-action@master
+        name: Push to Itch.io
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: windows
+          ITCH_GAME: dogengine
+          ITCH_USER: bioblaze
+          PACKAGE: D:\a\DOGEngine\DOGEngine\DOGEngine\Release\
