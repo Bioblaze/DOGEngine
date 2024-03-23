@@ -15,6 +15,4 @@ Remove-Item -Path $zipFile
 # Add the butler folder to the PATH environment variable for the current session
 $env:Path += ";$PWD\$targetFolder"
 
-# For permanent effect, uncomment the next line to add it to the system PATH
-# This requires administrative privileges
-# [System.Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
