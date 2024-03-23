@@ -3,10 +3,15 @@
 
 #include <iostream>
 #include <fmt/core.h>
+
 int main()
 {
-    std::cout << "Hello World!\n";
-    fmt::print("Hello with fmt!\n");
+    std::cout << "Hello World!\n";  // Using iostream for output
+    fmt::print("Hello with fmt!\n");  // Using fmt for output
+
+    std::cout << "Press Enter to close the application..." << std::endl;
+    std::cin.get();  // Wait for the user to press Enter
+
     return 0;
 }
 
