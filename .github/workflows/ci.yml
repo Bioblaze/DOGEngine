@@ -1,0 +1,40 @@
+# Copyright (c) 2021-2022-2023-2024 Luca Cappa
+# Released under the term specified in file LICENSE.txt
+# SPDX short identifier: MIT
+#
+# The peculiarity of this workflow is that assumes vcpkg stored as a submodule of this repository.
+# The workflow runs on x64 and ARM platforms.
+# Workflow steps:
+# - Setup vcpkg and cache it on the GitHub Action cloud based cache.
+# - Runs CMake with CMakePreset.json using a presest configuration
+#   that leverages the vcpkg's toolchain file. This will automatically run vcpkg 
+#   to install dependencies described by the vcpkg.json manifest file. 
+#   This stage also runs vcpkg with Binary Caching leveraging GitHub Action cache to 
+#   store the built packages artifacts, hence it will be a no-op if those are restored 
+#   from cache (e.g., already previously built).
+# - Finally builds the sources with Ninja, and tests as well.
+name: Build App
+on:
+  push:
+    branches: [ 'master', 'main', 'prod', 'production' ]
+
+jobs:
+  job:
+    name: windows build
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+    
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore from cache and setup vcpkg executable and data files.
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+
+      - name: Build app for release
+        run: msbuild DOGEngine\DOGEngine.vcxproj -t:rebuild -verbosity:diag -property:Configuration=Release
