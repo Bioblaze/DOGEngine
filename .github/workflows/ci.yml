@@ -34,7 +34,7 @@ jobs:
           vcpkg integrate install
 
       - name: Build app for release
-        run: msbuild DOGEngine\DOGEngine.vcxproj -t:build -verbosity:diag -property:Configuration=Release
+        run: msbuild DOGEngine.sln -t:build -verbosity:diag -property:Configuration=Release
 
       - name: Push to Itch.io
         run: |
