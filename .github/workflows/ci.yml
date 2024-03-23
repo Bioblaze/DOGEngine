@@ -38,4 +38,4 @@ jobs:
 
       - name: Push to Itch.io
         run: |
-          butler.exe push D:\a\DOGEngine\DOGEngine\DOGEngine\Release\ bioblaze/dogengine:windows-alpha
+          D:\a\DOGEngine\DOGEngine\butler\butler.exe push D:\a\DOGEngine\DOGEngine\DOGEngine\Release\ bioblaze/dogengine:windows-alpha
