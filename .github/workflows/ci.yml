@@ -34,7 +34,7 @@ jobs:
           vcpkg integrate install
 
       - name: Build app for release
-        run: msbuild DOGEngine.sln -t:build -verbosity:diag /p:Configuration=Release;Platform=x64 /p:ClCompile_AdditionalOptions="/std:c++17 %(ClCompile_AdditionalOptions)"
+        run: msbuild DOGEngine.sln -t:build -verbosity:diag /p:Configuration=Release /p:Platform=x64 /p:ClCompile_AdditionalOptions="/std:c++17 %(ClCompile_AdditionalOptions)"
 
       - name: Push to Itch.io
         run: |
