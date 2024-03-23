@@ -107,6 +107,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectoryNoRoot)\Server;$(MSBuildProjectDirectoryNoRoot)\Editor;$(MSBuildProjectDirectoryNoRoot)\Core;$(MSBuildProjectDirectoryNoRoot)\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,7 +132,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Client\GameClient.cpp" />
+    <ClCompile Include="Core\Components\HealthComponent.cpp" />
+    <ClCompile Include="Core\GameEntity.cpp" />
+    <ClCompile Include="Core\GamePlayer.cpp" />
+    <ClCompile Include="Core\Networking.cpp" />
+    <ClCompile Include="Core\Raycaster.cpp" />
+    <ClCompile Include="Core\Renderer.cpp" />
     <ClCompile Include="DOGEngine.cpp" />
+    <ClCompile Include="Editor\GameEditor.cpp" />
+    <ClCompile Include="Server\GameServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Client\GameClient.h" />
+    <ClInclude Include="Core\Components\HealthComponent.h" />
+    <ClInclude Include="Core\GameEntity.h" />
+    <ClInclude Include="Core\GamePlayer.h" />
+    <ClInclude Include="Core\Networking.h" />
+    <ClInclude Include="Core\Raycaster.h" />
+    <ClInclude Include="Core\Renderer.h" />
+    <ClInclude Include="Editor\GameEditor.h" />
+    <ClInclude Include="Server\GameServer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\GameEntity.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

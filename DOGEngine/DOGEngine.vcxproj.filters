@@ -13,10 +13,86 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Editor">
+      <UniqueIdentifier>{d064bd88-100e-4c86-b797-db101114f222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Client">
+      <UniqueIdentifier>{3df7ca60-6364-4f79-b6a3-c473bcb3eb1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{38569dde-86f9-401c-8c05-1d0ca6906d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server">
+      <UniqueIdentifier>{111be88f-f1e6-4bdf-8932-7e1c0bf3d057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Components">
+      <UniqueIdentifier>{1162a549-c4b6-4477-8418-47d2496cfd3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DOGEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Networking.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Client\GameClient.cpp">
+      <Filter>Source Files\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\GameServer.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\GameEditor.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GameEntity.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GamePlayer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Raycaster.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Renderer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Components\HealthComponent.cpp">
+      <Filter>Source Files\Core\Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Networking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Client\GameClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\GameServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\GameEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Raycaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GameEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GamePlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Components\HealthComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\GameEntity.inl">
+      <Filter>Source Files\Core</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
     "Randolph William Aarseth II <randolph@divine.games>"
   ],
   "dependencies": [
+    "entt",
     "fmt"
   ]
 }
