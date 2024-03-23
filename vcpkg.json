@@ -1,0 +1,10 @@
+{
+  "name": "dog-engine",
+  "supports": "windows",
+  "maintainers": [
+    "Randolph William Aarseth II <randolph@divine.games>"
+  ],
+  "dependencies": [
+    "fmt"
+  ]
+}

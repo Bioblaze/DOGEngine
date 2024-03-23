@@ -2,10 +2,12 @@
 //
 
 #include <iostream>
-
+#include <fmt/core.h>
 int main()
 {
     std::cout << "Hello World!\n";
+    fmt::print("Hello with fmt!\n");
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
