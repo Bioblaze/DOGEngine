@@ -1,7 +1,7 @@
 # Define the URL and the target folder
 $url = "https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default"
 $zipFile = "butler.zip"
-$targetFolder = "D:\a\DOGEngine\DOGEngine\butler"
+$targetFolder = "butler"
 
 # Download the file
 Invoke-WebRequest -Uri $url -OutFile $zipFile
