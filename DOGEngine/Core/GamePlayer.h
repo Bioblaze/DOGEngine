@@ -6,7 +6,7 @@
 class GamePlayer : public GameEntity {
 public:
     // Constructor. Uses GameEntity's constructor to initialize the base part of the object
-    GamePlayer(entt::registry& registry);
+    GamePlayer(entt::registry& registry, uint32_t connectionId = 0);
 
     // Destructor
     virtual ~GamePlayer();
@@ -21,6 +21,7 @@ public:
 
 private:
     std::string playerName;
+    uint32_t connection_id; // Assuming enet uses uint32_t for connection IDs
 };
 
 #endif // GAMEPLAYER_H

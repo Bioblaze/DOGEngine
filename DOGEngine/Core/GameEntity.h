@@ -6,7 +6,7 @@
 class GameEntity {
 public:
     // Constructor
-    GameEntity(entt::registry& registry);
+    GameEntity(entt::registry& registry, int entityId);
     // Destructor
     virtual ~GameEntity();
 
@@ -32,6 +32,7 @@ private:
 
     // Position variables
     float posX = 0.0f, posY = 0.0f, posZ = 0.0f;
+    int entity_id;
 };
 
 #include <iostream> // For std::cout

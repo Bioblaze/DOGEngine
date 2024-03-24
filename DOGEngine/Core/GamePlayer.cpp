@@ -1,7 +1,7 @@
 #include "GamePlayer.h"
 
-GamePlayer::GamePlayer(entt::registry& registry)
-    : GameEntity(registry) // Initialize the base class part of GamePlayer
+GamePlayer::GamePlayer(entt::registry& registry, uint32_t connectionId)
+    : GameEntity(registry, -1), connection_id(connectionId) // Initialize the base class part of GamePlayer
 {
     // Initialization specific to GamePlayer
 }

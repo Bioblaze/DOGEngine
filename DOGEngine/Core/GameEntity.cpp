@@ -1,7 +1,7 @@
 #include "GameEntity.h"
 
-GameEntity::GameEntity(entt::registry& registry)
-    : registry(registry), entity(registry.create()) {}
+GameEntity::GameEntity(entt::registry& registry, int entityId)
+    : registry(registry), entity(registry.create()), entity_id(entityId) {}
 
 GameEntity::~GameEntity() {
     registry.destroy(entity);
