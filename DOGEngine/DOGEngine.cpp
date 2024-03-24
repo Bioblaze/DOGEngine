@@ -3,15 +3,11 @@
 
 #include <iostream>
 #include "Core/Logger.h" 
-#include <chrono>    // For std::chrono::system_clock
-#include <iomanip>   // For std::put_time
-#include <sstream>   // For std::stringstream
-#include <ctime>
 
 
 int main()
 {
-    Logger appLogger("appLog.txt", true); // Initialize Logger with an output file and debug enabled
+    Logger appLogger("testing.log", true); // Initialize Logger with an output file and debug enabled
 
     appLogger.Log("Hello World!");  // Log a simple message
 
