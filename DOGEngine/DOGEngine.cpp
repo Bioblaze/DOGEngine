@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include "Core/Logger.h" 
+#include "Core/Renderer.h"
 #include "Editor/BuildSystem.h"
-
 
 int main()
 {
@@ -19,17 +19,31 @@ int main()
     appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
 
 
-    std::string buildToolPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
-    BuildSystem buildSystem(buildToolPath);
-    std::string projectPath = "E:\\DivineGames\\DungeonEngine\\DOGEngine\\DOGEngine.sln";
-    std::string additionalArguments = "/p:Configuration=Debug /p:Platform=x64";
+    //std::string buildToolPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
+    //BuildSystem buildSystem(buildToolPath);
+    //std::string projectPath = "E:\\DivineGames\\DungeonEngine\\DOGEngine\\DOGEngine.sln";
+    //std::string additionalArguments = "/p:Configuration=Debug /p:Platform=x64";
 
-    if (buildSystem.compile(projectPath, additionalArguments, true, true)) {
-        std::cout << "Build succeeded." << std::endl;
+    //if (buildSystem.compile(projectPath, additionalArguments, true, true)) {
+    //    std::cout << "Build succeeded." << std::endl;
+    //}
+    //else {
+    //    std::cout << "Build failed." << std::endl;
+    //}
+
+    try {
+        Renderer& renderer = Renderer::getInstance();
+        renderer.CreateWindow("Hello World", 800, 600);
+        while (!glfwWindowShouldClose(renderer.GetWindow())) {
+            // Game loop content here
+            glfwSwapBuffers(renderer.GetWindow());
+            glfwPollEvents();
+        }
     }
-    else {
-        std::cout << "Build failed." << std::endl;
+    catch (const std::exception& e) {
+        std::cerr << "Exception occurred: " << e.what() << std::endl;
     }
+
 
     appLogger.Log("Press Enter to close the application...");
     std::cin.get();  // Wait for the user to press Enter

@@ -1,11 +1,17 @@
 {
   "name": "dog-engine",
+  "maintainers": "Randolph William Aarseth II <randolph@divine.games>",
   "supports": "windows",
-  "maintainers": [
-    "Randolph William Aarseth II <randolph@divine.games>"
-  ],
   "dependencies": [
+    "cereal",
     "entt",
-    "fmt"
+    "fmt",
+    "glew",
+    "glm",
+    "imgui",
+    "opengl",
+    "sdl2",
+    "sdl2-image",
+    "glfw3"
   ]
 }
