@@ -2,13 +2,15 @@
 template<typename T, typename... Args>
 T& GameEntity::addComponent(Args&&... args) {
     if (hasComponent<T>()) {
-        registry.replace<T>(entity, std::forward<Args>(args)...);
+        std::cout << "Attempting to add a component of type " << typeid(T).name()
+            << " that already exists. Returning attached component." << std::endl;
+        return registry.get<T>(entity);
     }
     else {
-        registry.emplace<T>(entity, std::forward<Args>(args)...);
+        return registry.emplace<T>(entity, std::forward<Args>(args)...);
     }
-    return registry.get<T>(entity);
 }
+
 
 // removeComponent definition
 template<typename T>
