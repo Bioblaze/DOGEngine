@@ -15,13 +15,13 @@ public:
     void Log(const char* format, ...);
     void DebugLog(const char* format, ...);
     void EnableDebug(bool enable);
+    std::string GetTimestamp() const; // Helper function to generate timestamps
 
 private:
     FILE* file;
     bool debug;
     mutable std::mutex logMutex; // Mutex for thread-safe logging
 
-    std::string GetTimestamp() const; // Helper function to generate timestamps
     void LogHelper(const char* format, va_list args);
 };
 

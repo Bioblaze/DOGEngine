@@ -17,3 +17,7 @@ void GamePlayer::setName(const std::string& name) {
 std::string GamePlayer::getName() const {
     return playerName;
 }
+
+uint32_t GamePlayer::GetConnID() const {
+    return this->getConnectionId(); 
+}

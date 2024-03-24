@@ -2,18 +2,30 @@
 //
 
 #include <iostream>
-#include <fmt/core.h>
+#include "Core/Logger.h" 
+#include <chrono>    // For std::chrono::system_clock
+#include <iomanip>   // For std::put_time
+#include <sstream>   // For std::stringstream
+#include <ctime>
+
 
 int main()
 {
-    std::cout << "Hello World!\n";  // Using iostream for output
-    fmt::print("Hello with fmt!\n");  // Using fmt for output
+    Logger appLogger("appLog.txt", true); // Initialize Logger with an output file and debug enabled
 
-    std::cout << "Press Enter to close the application..." << std::endl;
+    appLogger.Log("Hello World!");  // Log a simple message
+
+    std::string timeString = appLogger.GetTimestamp();
+
+    // Log with current time using DebugLog
+    appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
+
+    appLogger.Log("Press Enter to close the application...");
     std::cin.get();  // Wait for the user to press Enter
 
     return 0;
 }
+
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

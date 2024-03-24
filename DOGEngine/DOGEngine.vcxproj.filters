@@ -60,6 +60,12 @@
     <ClCompile Include="Core\Components\HealthComponent.cpp">
       <Filter>Source Files\Core\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Components\DamageComponent.cpp">
+      <Filter>Source Files\Core\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Networking.h">
@@ -87,6 +93,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Components\HealthComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Components\DamageComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

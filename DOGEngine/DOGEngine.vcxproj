@@ -124,7 +124,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectoryNoRoot)\Server;$(MSBuildProjectDirectoryNoRoot)\Editor;$(MSBuildProjectDirectoryNoRoot)\Core;$(MSBuildProjectDirectoryNoRoot)\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectoryNoRoot)\Core\Components;$(MSBuildProjectDirectoryNoRoot)\Server;$(MSBuildProjectDirectoryNoRoot)\Editor;$(MSBuildProjectDirectoryNoRoot)\Core;$(MSBuildProjectDirectoryNoRoot)\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,9 +135,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client\GameClient.cpp" />
+    <ClCompile Include="Core\Components\DamageComponent.cpp" />
     <ClCompile Include="Core\Components\HealthComponent.cpp" />
     <ClCompile Include="Core\GameEntity.cpp" />
     <ClCompile Include="Core\GamePlayer.cpp" />
+    <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Networking.cpp" />
     <ClCompile Include="Core\Raycaster.cpp" />
     <ClCompile Include="Core\Renderer.cpp" />
@@ -147,9 +149,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client\GameClient.h" />
+    <ClInclude Include="Core\Components\DamageComponent.h" />
     <ClInclude Include="Core\Components\HealthComponent.h" />
     <ClInclude Include="Core\GameEntity.h" />
     <ClInclude Include="Core\GamePlayer.h" />
+    <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Networking.h" />
     <ClInclude Include="Core\Raycaster.h" />
     <ClInclude Include="Core\Renderer.h" />
