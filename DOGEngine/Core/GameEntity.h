@@ -10,6 +10,10 @@ public:
     // Destructor
     virtual ~GameEntity();
 
+    // Position manipulation functions
+    void setPosition(float x, float y, float z);
+    std::tuple<float, float, float> getPosition() const;
+
     // Adds a component of type T to the entity or replaces it if it already exists
     template<typename T, typename... Args>
     T& addComponent(Args&&... args);
@@ -25,6 +29,9 @@ public:
 private:
     entt::registry& registry;
     entt::entity entity;
+
+    // Position variables
+    float posX = 0.0f, posY = 0.0f, posZ = 0.0f;
 };
 
 #include <iostream> // For std::cout
