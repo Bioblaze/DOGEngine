@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectoryNoRoot)\Server;$(MSBuildProjectDirectoryNoRoot)\Editor;$(MSBuildProjectDirectoryNoRoot)\Core;$(MSBuildProjectDirectoryNoRoot)\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectoryNoRoot);$(MSBuildProjectDirectoryNoRoot)\Core;$(MSBuildProjectDirectoryNoRoot)\Core\Components;$(MSBuildProjectDirectoryNoRoot)\Editor;$(MSBuildProjectDirectoryNoRoot)\Server;$(MSBuildProjectDirectoryNoRoot)\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -144,6 +144,7 @@
     <ClCompile Include="Core\Raycaster.cpp" />
     <ClCompile Include="Core\Renderer.cpp" />
     <ClCompile Include="DOGEngine.cpp" />
+    <ClCompile Include="Editor\BuildSystem.cpp" />
     <ClCompile Include="Editor\GameEditor.cpp" />
     <ClCompile Include="Server\GameServer.cpp" />
   </ItemGroup>
@@ -157,11 +158,13 @@
     <ClInclude Include="Core\Networking.h" />
     <ClInclude Include="Core\Raycaster.h" />
     <ClInclude Include="Core\Renderer.h" />
+    <ClInclude Include="Editor\BuildSystem.h" />
     <ClInclude Include="Editor\GameEditor.h" />
     <ClInclude Include="Server\GameServer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\GameEntity.inl" />
+    <None Include="Core\Logger.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

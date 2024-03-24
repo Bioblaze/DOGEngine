@@ -66,6 +66,9 @@
     <ClCompile Include="Core\Logger.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\BuildSystem.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Networking.h">
@@ -101,9 +104,15 @@
     <ClInclude Include="Core\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\BuildSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\GameEntity.inl">
+      <Filter>Source Files\Core</Filter>
+    </None>
+    <None Include="Core\Logger.inl">
       <Filter>Source Files\Core</Filter>
     </None>
   </ItemGroup>

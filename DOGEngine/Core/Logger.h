@@ -2,27 +2,62 @@
 #define LOGGER_H
 
 #include <cstdio>
-#include <cstdarg> // For variadic functions support
+#include <cstdarg>
 #include <string>
-#include <mutex>  // For std::mutex
-#include <chrono> // For time-related functionalities
+#include <mutex>
+#include <chrono>
+
+#include <fmt/core.h>
+#include <fmt/format.h>
 
 class Logger {
 public:
-    Logger(const std::string& outputFile, bool debugEnabled);
-    ~Logger();
+    // Singleton access method.
+    static Logger& Get() {
+        static Logger instance("default.log", false);
+        return instance;
+    }
 
-    void Log(const char* format, ...);
-    void DebugLog(const char* format, ...);
+    // Deleted to prevent copying and assignment.
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+
+    // Methods for logging.
+
+    template<typename... Args>
+    void Log(const std::string& format, Args... args);
+
+    template<typename... Args>
+    void DebugLog(const std::string& format, Args... args);
+
+    // Enable or disable debug logging.
     void EnableDebug(bool enable);
-    std::string GetTimestamp() const; // Helper function to generate timestamps
+
+    // Method to set or reset the configuration.
+    static void SetConfig(const std::string& outputFile, bool debugEnabled);
+
+    // Get the current timestamp as a string.
+    std::string GetTimestamp() const;
+
+    // Optionally public or private destructor. If public, ensures it can be called automatically at program termination.
+    ~Logger() {
+        if (file) {
+            fclose(file);
+        }
+    }
 
 private:
-    FILE* file;
-    bool debug;
-    mutable std::mutex logMutex; // Mutex for thread-safe logging
+    // Private constructor to prevent external instantiation.
+    Logger(const std::string& outputFile, bool debugEnabled);
 
-    void LogHelper(const char* format, va_list args);
+    // Helper method for logging.
+    void LogHelper(const std::string& message);
+
+    FILE* file; // File pointer for the log file.
+    bool debug; // Flag indicating whether debug logging is enabled.
+    mutable std::mutex logMutex; // Mutex for thread-safe logging.
 };
+
+#include "Logger.inl"
 
 #endif // LOGGER_H

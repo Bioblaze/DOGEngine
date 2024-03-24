@@ -3,11 +3,13 @@
 
 #include <iostream>
 #include "Core/Logger.h" 
+#include "Editor/BuildSystem.h"
 
 
 int main()
 {
-    Logger appLogger("testing.log", true); // Initialize Logger with an output file and debug enabled
+    Logger& appLogger = Logger::Get();
+    appLogger.SetConfig("defaultLog.log", true);
 
     appLogger.Log("Hello World!");  // Log a simple message
 
@@ -15,6 +17,19 @@ int main()
 
     // Log with current time using DebugLog
     appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
+
+
+    std::string buildToolPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
+    BuildSystem buildSystem(buildToolPath);
+    std::string projectPath = "E:\\DivineGames\\DungeonEngine\\DOGEngine\\DOGEngine.sln";
+    std::string additionalArguments = "/p:Configuration=Debug /p:Platform=x64";
+
+    if (buildSystem.compile(projectPath, additionalArguments, true, true)) {
+        std::cout << "Build succeeded." << std::endl;
+    }
+    else {
+        std::cout << "Build failed." << std::endl;
+    }
 
     appLogger.Log("Press Enter to close the application...");
     std::cin.get();  // Wait for the user to press Enter
