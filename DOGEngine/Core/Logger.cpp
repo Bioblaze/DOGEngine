@@ -10,7 +10,7 @@
 Logger::Logger(const std::string& outputFile, bool debugEnabled)
     : debug(debugEnabled) {
     std::filesystem::path logFilePath = std::filesystem::current_path() / outputFile;
-    file = fopen(logFilePath.string().c_str(), "a");
+    fopen_s(&file, logFilePath.string().c_str(), "a");
     if (file == nullptr) {
         // If opening the file fails, print to stderr
         fprintf(stderr, "Failed to open log file: %s\n", logFilePath.string().c_str());
@@ -31,7 +31,7 @@ void Logger::SetConfig(const std::string& outputFile, bool debugEnabled) {
 
     // Attempt to open the new log file
     std::filesystem::path logFilePath = std::filesystem::current_path() / outputFile;
-    instance.file = fopen(logFilePath.string().c_str(), "a");
+    fopen_s(&instance.file, logFilePath.string().c_str(), "a");
     if (instance.file == nullptr) {
         fprintf(stderr, "Failed to open log file: %s\n", logFilePath.string().c_str());
     }
