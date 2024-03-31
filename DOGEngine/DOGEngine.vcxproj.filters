@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Core\Components">
       <UniqueIdentifier>{1162a549-c4b6-4477-8418-47d2496cfd3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Core\Shaders">
+      <UniqueIdentifier>{4dc0ebb2-144b-4576-8dab-0db68d1d7dd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DOGEngine.cpp">
@@ -114,6 +117,42 @@
     </None>
     <None Include="Core\Logger.inl">
       <Filter>Source Files\Core</Filter>
+    </None>
+    <None Include="Core\Shaders\fragment_shader_n64.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\vertex_shader_n64.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\fragment_shader_crt.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\vertex_shader_crt.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\fragment_shader_vhs.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\vertex_shader_vhs.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\fragment_shader_doom.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\vertex_shader_doom.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\fragment_shader_ps1.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\vertex_shader_ps1.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\fragment_shader_lcd.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
+    </None>
+    <None Include="Core\Shaders\vertex_shader_lcd.glsl">
+      <Filter>Source Files\Core\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

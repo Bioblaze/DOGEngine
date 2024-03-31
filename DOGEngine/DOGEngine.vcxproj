@@ -125,6 +125,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(MSBuildProjectDirectoryNoRoot)\Core\Components;$(MSBuildProjectDirectoryNoRoot)\Server;$(MSBuildProjectDirectoryNoRoot)\Editor;$(MSBuildProjectDirectoryNoRoot)\Core;$(MSBuildProjectDirectoryNoRoot)\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,9 +144,12 @@
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Networking.cpp" />
     <ClCompile Include="Core\Raycaster.cpp" />
-    <ClCompile Include="Core\Renderer.cpp" />
+    <ClCompile Include="Core\Renderer.cpp">
+      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Release|x64'">None</DebugInformationFormat>
+    </ClCompile>
     <ClCompile Include="DOGEngine.cpp" />
-    <ClCompile Include="Editor\BuildSystem.cpp" />
+    <ClCompile Include="Editor\BuildSystem.windows.cpp" />
+    <ClCompile Include="Editor\BuildSystem.unix.cpp" />
     <ClCompile Include="Editor\GameEditor.cpp" />
     <ClCompile Include="Server\GameServer.cpp" />
   </ItemGroup>
@@ -165,6 +170,18 @@
   <ItemGroup>
     <None Include="Core\GameEntity.inl" />
     <None Include="Core\Logger.inl" />
+    <None Include="Core\Shaders\fragment_shader_crt.glsl" />
+    <None Include="Core\Shaders\fragment_shader_doom.glsl" />
+    <None Include="Core\Shaders\fragment_shader_lcd.glsl" />
+    <None Include="Core\Shaders\fragment_shader_ps1.glsl" />
+    <None Include="Core\Shaders\fragment_shader_vhs.glsl" />
+    <None Include="Core\Shaders\fragment_shader_n64.glsl" />
+    <None Include="Core\Shaders\vertex_shader_doom.glsl" />
+    <None Include="Core\Shaders\vertex_shader_lcd.glsl" />
+    <None Include="Core\Shaders\vertex_shader_n64.glsl" />
+    <None Include="Core\Shaders\vertex_shader_crt.glsl" />
+    <None Include="Core\Shaders\vertex_shader_ps1.glsl" />
+    <None Include="Core\Shaders\vertex_shader_vhs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
