@@ -451,3 +451,9 @@ vcpkg-manifest-install.log
 vcpkg_installed/
 
 # End of https://www.toptal.com/developers/gitignore/api/vcpkg
+
+# Custom .gitignore entries (mainly for Linux/CMake):
+
+my_overlays/
+my_build.sh
+build/

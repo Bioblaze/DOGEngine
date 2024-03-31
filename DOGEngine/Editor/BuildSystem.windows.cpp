@@ -1,4 +1,5 @@
-// BuildSystem.cpp
+// BuildSystem.windows.cpp
+#ifdef DOG_PLATFORM_WINDOWS
 #include "BuildSystem.h"
 #include <iostream>
 #include <windows.h>
@@ -79,3 +80,4 @@ bool BuildSystem::checkBuildToolExists() {
     return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
         !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
+#endif
