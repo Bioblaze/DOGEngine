@@ -36,14 +36,34 @@ void Portal2D::Renderer::EndFrame() {
     SDL_RenderPresent(this->sdl_renderer);
 }
 
-void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, int clip_x0, int clip_x1) {
-    // ...
+void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, Portal2D::Camera camera, int clip_x0, int clip_x1) {
+    for (const Portal2D::Wall &wall : room.walls) {
+        // TODO: Find viewing range of wall, and clip it to
+        // [clip_x0, clip_x1). For now, we will assume the
+        // range to be [0, this->screen_width].
+        
+        int wall_x0 = 0;
+        int wall_x1 = this->screen_width;
+        
+        wall_x0 = std::max(wall_x0, clip_x0);
+        wall_x1 = std::min(wall_x1, clip_x1);
+        
+        if (wall_x0 >= wall_x1) {
+            continue;
+        }
+        
+        if (wall.link != nullptr) {
+            this->DrawRoom(*(wall.link->room), camera, wall_x0, wall_x1);
+        }
+    }
 }
 
 void Portal2D::Renderer::DrawScreen() {
     // TODO: Find the room the camera is in right now.
     
     /*
+    Camera camera = ...;
+    
     Room &room = ...;
     this->DrawRoom(room, 0, this->screen_width);
     */

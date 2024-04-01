@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "Camera.h"
 #include "Room.h"
 
 namespace Portal2D {
@@ -14,7 +15,7 @@ namespace Portal2D {
         void BeginFrame();
         void EndFrame();
 
-        void DrawRoom(const Portal2D::Room &room, int clip_x0, int clip_x1);
+        void DrawRoom(const Portal2D::Room &room, Portal2D::Camera camera, int clip_x0, int clip_x1);
         void DrawScreen();
 
         SDL_Window *GetSDLWindow();
