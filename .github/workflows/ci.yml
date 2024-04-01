@@ -44,12 +44,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
-      DCMAKE_TOOLCHAIN_FILE: ./vcpkg/scripts/buildsystems/vcpkg.cmake
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
+
+      - name: apt install deps
+        run: sudo apt install build-essential cmake
+        shell: bash
 
       - name: Setup vckpg
         run: cd vcpkg && ./bootstrap-vcpkg.sh
