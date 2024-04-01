@@ -1,10 +1,10 @@
-name: Build App
+name: Editor Build
 on:
   push:
     branches: [ 'master', 'main', 'prod', 'production' ]
 
 jobs:
-  job:
+  windows:
     name: windows build
     runs-on: windows-latest
     env:
@@ -39,3 +39,18 @@ jobs:
       - name: Push to Itch.io
         run: |
           D:\a\DOGEngine\DOGEngine\butler\butler.exe push D:\a\DOGEngine\DOGEngine\x64\Release\ bioblaze/dogengine:windows-alpha
+  linux:
+    name: linux build
+    runs-on: ubuntu-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+      DCMAKE_TOOLCHAIN_FILE: ./vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      # New step to run SetupButler.ps1
+      - name: Run Build.sh
+        run: ./Build.sh
+        shell: bash
