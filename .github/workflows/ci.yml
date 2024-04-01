@@ -50,7 +50,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      # New step to run SetupButler.ps1
+
+      - name: Setup vckpg
+        run: cd vcpkg && ./bootstrap-vcpkg.sh
+        shell: bash
+
+      - name: installing dependencies
+        run: vcpkg integrate install
+        shell: bash
+
       - name: Run Build.sh
         run: chmod +x ./Build.sh && ./Build.sh
         shell: bash
