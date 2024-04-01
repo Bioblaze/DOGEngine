@@ -34,6 +34,7 @@ add_executable(dog-engine
 add_subdirectory(DOGEngine/Client)
 add_subdirectory(DOGEngine/Core)
 add_subdirectory(DOGEngine/Editor)
+add_subdirectory(DOGEngine/Portal2D)
 add_subdirectory(DOGEngine/Server)
 
 # TODO: Use target platform instead, who knows, maybe someone
