@@ -52,5 +52,5 @@ jobs:
           submodules: true
       # New step to run SetupButler.ps1
       - name: Run Build.sh
-        run: ./Build.sh
+        run: chmod +x ./Build.sh && ./Build.sh
         shell: bash
