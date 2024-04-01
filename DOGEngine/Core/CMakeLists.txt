@@ -4,6 +4,5 @@ target_sources(dog-engine
   PRIVATE Logger.cpp
   PRIVATE MenuManager.cpp
   PRIVATE Networking.cpp
-  PRIVATE Raycaster.cpp
   PRIVATE Renderer.cpp
 )
