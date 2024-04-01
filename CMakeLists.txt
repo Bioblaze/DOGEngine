@@ -34,6 +34,7 @@ add_executable(dog-engine
 add_subdirectory(DOGEngine/Client)
 add_subdirectory(DOGEngine/Core)
 add_subdirectory(DOGEngine/Editor)
+add_subdirectory(DOGEngine/Portal2D)
 add_subdirectory(DOGEngine/Server)
 
 # TODO: Use target platform instead, who knows, maybe someone
@@ -56,8 +57,14 @@ target_link_libraries(dog-engine
   PRIVATE glm::glm # If using header-only, replace glm::glm with glm::glm-header-only
   PRIVATE SDL2::SDL2 SDL2::SDL2main # SDL2 static or dynamic as available
   PRIVATE imgui::imgui
+  
+  # Disabling these temporally, until we get them to *consistently*
+  # show up in CMake. Should be fine until we actually start using
+  # them, so if you do not see any errors whilst compiling, do not
+  # even bother enabling this.
+  
   # PRIVATE SDL2_image::SDL2_image # SDL2_image static or dynamic as available, with libjpeg-turbo feature
-  PRIVATE SDL2_mixer::SDL2_mixer # SDL2_mixer static or dynamic as available, with mpg123 feature
+  # PRIVATE SDL2_mixer::SDL2_mixer # SDL2_mixer static or dynamic as available, with mpg123 feature
 )
 
 # Include directories

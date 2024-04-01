@@ -3,8 +3,9 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
 #include "Core/Logger.h" 
-#include "Core/Renderer.h"
+// #include "Core/Renderer.h"
 #include "Editor/BuildSystem.h"
+#include "Portal2D/Renderer.h"
 #include "imgui.h"
 
 int main(int argc, char* args[])
@@ -20,27 +21,24 @@ int main(int argc, char* args[])
     appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
 
     try {
-        Renderer& renderer = Renderer::getInstance();
-        renderer.CreateWindow("Hello World", 800, 600);
+        Portal2D::Renderer renderer("Hello World", 800, 600);
         bool running = true;
-        SDL_Event e;
+        SDL_Event event;
 
-        // Initial player state, adjust as necessary
-        renderer.player.x = 22; // Player's starting X position
-        renderer.player.y = 12; // Player's starting Y position
-        renderer.player.angle = 0; // Player's starting view angle
         while (running) {
-            while (SDL_PollEvent(&e) != 0) {
+            while (SDL_PollEvent(&event) != 0) {
                 // User requests quit
-                if (e.type == SDL_QUIT) {
+                if (event.type == SDL_QUIT) {
                     running = false;
                 }
             }
 
 
-            renderer.Prepare2DRender(); // Prepare renderer for drawing 2D content
+            renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
-            renderer.Render3DView(); // Render the 3D view using raycasting
+            renderer.DrawScreen(); // Render the 3D view
+
+            renderer.EndFrame();
 
             // Clear screen with a color
             //SDL_SetRenderDrawColor(renderer.GetRenderer(), 0xFF, 0xFF, 0xFF, 0xFF); // White
