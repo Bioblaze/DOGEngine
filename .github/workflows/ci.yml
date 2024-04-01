@@ -51,7 +51,15 @@ jobs:
           submodules: true
 
       - name: apt install deps
-        run: apt install build-essential cmake
+        run: sudo apt install build-essential cmake g++
+        shell: bash
+
+      - name: is g++ installed?
+        run: g++ --version
+        shell: bash
+
+      - name: is make installed?
+        run: make --version
         shell: bash
 
       - name: Setup vckpg
