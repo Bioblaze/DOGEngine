@@ -3,9 +3,11 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
 #include "Core/Logger.h" 
-// #include "Core/Renderer.h"
 #include "Editor/BuildSystem.h"
 #include "Portal2D/Renderer.h"
+#include "Portal2D/Camera.h"
+#include "Portal2D/Room.h"
+#include "Portal2D/Wall.h"
 #include "imgui.h"
 
 int main(int argc, char* args[])
@@ -19,6 +21,16 @@ int main(int argc, char* args[])
 
     // Log with current time using DebugLog
     appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
+
+    Portal2D::Room my_room;
+
+    my_room.walls.push_back({&my_room, -3, 4, NULL});
+    my_room.walls.push_back({&my_room, 4, 2, NULL});
+    my_room.walls.push_back({&my_room, 5, -2, NULL});
+    my_room.walls.push_back({&my_room, -1, -4, NULL});
+    my_room.walls.push_back({&my_room, -5, 1, NULL});
+
+    Portal2D::Camera my_camera = {0.0f, 0.0f, 0.0f};
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);
@@ -36,7 +48,8 @@ int main(int argc, char* args[])
 
             renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
-            renderer.DrawScreen(); // Render the 3D view
+            renderer.DrawRoom(my_room, my_camera, 0, 800); // Render the 3D view
+            my_camera.angle += 0.01f;
 
             renderer.EndFrame();
 
