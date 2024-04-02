@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cmath>
 
 #include "Renderer.h"
 
@@ -8,7 +9,7 @@ Portal2D::Renderer::Renderer(const char *title, int width, int height) {
     this->sdl_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
     assert(this->sdl_window != nullptr);
     
-    this->sdl_renderer = SDL_CreateRenderer(this->sdl_window, -1, SDL_RENDERER_ACCELERATED);
+    this->sdl_renderer = SDL_CreateRenderer(this->sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     assert(this->sdl_renderer != nullptr);
     
     this->screen_width = width;
@@ -36,37 +37,108 @@ void Portal2D::Renderer::EndFrame() {
     SDL_RenderPresent(this->sdl_renderer);
 }
 
-void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, Portal2D::Camera camera, int clip_x0, int clip_x1) {
-    for (const Portal2D::Wall &wall : room.walls) {
-        // TODO: Find viewing range of wall, and clip it to
-        // [clip_x0, clip_x1). For now, we will assume the
-        // range to be [0, this->screen_width].
+void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, int screen_x0, int screen_x1, float y0, float y1) {
+    // TODO: Texture mapping goes here, for now let's just be happy with having
+    // some walls rendered :D.
+    
+    float height_y0 = 320.0f / y0;
+    float height_y1 = 320.0f / y1;
+    
+    float quad_x0 = screen_x0;
+    float quad_y0 = this->screen_height * 0.5f - height_y0;
+    
+    float quad_x1 = screen_x1;
+    float quad_y1 = this->screen_height * 0.5f - height_y1;
+    
+    float quad_x2 = screen_x1;
+    float quad_y2 = this->screen_height * 0.5f + height_y1;
+    
+    float quad_x3 = screen_x0;
+    float quad_y3 = this->screen_height * 0.5f + height_y0;
+    
+    const SDL_Vertex sdl_array[] = {
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {0, 255, 0, 255}, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {0, 0, 255, 255}, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 0, 255}, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {0.0f, 0.0f}},
+    };
+    
+    SDL_RenderGeometry(this->sdl_renderer, nullptr, sdl_array + 0, 3, nullptr, 0);
+    SDL_RenderGeometry(this->sdl_renderer, nullptr, sdl_array + 2, 3, nullptr, 0);
+}
+
+void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, int clip_x0, int clip_x1) {
+    float cos_angle = cosf(camera.angle);
+    float sin_angle = sinf(camera.angle);
+    
+    for (auto i = 0; i < room.walls.size(); i++) {
+        const Portal2D::Wall &wall = room.walls[i];
+        auto j = (i + 1) % room.walls.size();
         
-        int wall_x0 = 0;
-        int wall_x1 = this->screen_width;
+        // (x0, y0) - (x1, y1) defines the wall as it exists.
         
-        wall_x0 = std::max(wall_x0, clip_x0);
-        wall_x1 = std::min(wall_x1, clip_x1);
+        float x0 = wall.point_x - camera.point_x;
+        float y0 = wall.point_y - camera.point_y;
+        
+        float x1 = room.walls[j].point_x - camera.point_x;
+        float y1 = room.walls[j].point_y - camera.point_y;
+        
+        // (x0_r, y0_r) - (x1_r, y1_r) defines the wall after its rotation.
+        
+        float x0_r = x0 * cos_angle - y0 * sin_angle;
+        float y0_r = x0 * sin_angle + y0 * cos_angle;
+        
+        float x1_r = x1 * cos_angle - y1 * sin_angle;
+        float y1_r = x1 * sin_angle + y1 * cos_angle;
+        
+        // Clip the walls to the 2D camera frustum (TODO: reduce frustum as
+        // other rooms are rendered, using clip_x0 and clip_x1).
+        
+        float kp = (x0_r - y0_r) / ((x0_r - y0_r) - (x1_r - y1_r));
+        
+        if (kp > 0.0f && kp < 1.0f) {
+            x1_r = x0_r + (x1_r - x0_r) * kp;
+            y1_r = y0_r + (y1_r - y0_r) * kp;
+        }
+        
+        float kn = (x0_r + y0_r) / ((x0_r + y0_r) - (x1_r + y1_r));
+        
+        if (kn > 0.0f && kn < 1.0f) {
+            x0_r = x0_r + (x1_r - x0_r) * kn;
+            y0_r = y0_r + (y1_r - y0_r) * kn;
+        }
+        
+        // TODO: For some reason, certain walls are failing this condition
+        // when they should not.
+        
+        if (y0_r < 0.0f || y1_r < 0.0f) {
+            continue;
+        }
+        
+        // wall_x0 - wall_x1 defines its linear projection.
+        
+        float wall_x0 = x0_r / y0_r;
+        float wall_x1 = x1_r / y1_r;
         
         if (wall_x0 >= wall_x1) {
             continue;
         }
         
+        // screen_x0 - screen_x1 defines the final pixel-based coordinates.
+        
+        int screen_x0 = (int)((wall_x0 + 1.0f) * this->screen_width * 0.5f);
+        int screen_x1 = (int)((wall_x1 + 1.0f) * this->screen_width * 0.5f);
+        
+        // Everything before this point was just the math necessary to get it
+        // working, the code below does the actual rendering with SDL2.
+        
+        this->DrawWall(wall, screen_x0, screen_x1, y0_r, y1_r);
+        
         if (wall.link != nullptr) {
-            this->DrawRoom(*(wall.link->room), camera, wall_x0, wall_x1);
+            this->DrawRoom(*(wall.link->room), camera, screen_x0, screen_x1);
         }
     }
-}
-
-void Portal2D::Renderer::DrawScreen() {
-    // TODO: Find the room the camera is in right now.
-    
-    /*
-    Camera camera = ...;
-    
-    Room &room = ...;
-    this->DrawRoom(room, 0, this->screen_width);
-    */
 }
 
 SDL_Window *Portal2D::Renderer::GetSDLWindow() {
