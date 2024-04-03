@@ -1,6 +1,8 @@
 #ifndef PORTAL2D_CAMERA_H
 #define PORTAL2D_CAMERA_H
 
+#include "Room.h"
+
 namespace Portal2D {
     struct Camera {
         Room *room;
