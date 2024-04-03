@@ -3,8 +3,12 @@
 
 namespace Portal2D {
     struct Camera {
+        Room *room;
+        
         float point_x, point_y;
         float angle;
+
+        void update();
     };
 };
 

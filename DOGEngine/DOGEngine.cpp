@@ -37,7 +37,7 @@ int main(int argc, char* args[])
     my_room_2.walls.push_back({&my_room_2, NULL, 12, -6});
     my_room_2.walls.push_back({&my_room_2, NULL, 4, -6});
 
-    Portal2D::Camera my_camera = {0.0f, 0.0f, 0.0f};
+    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.0f};
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);
@@ -55,7 +55,7 @@ int main(int argc, char* args[])
 
             renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
-            renderer.DrawRoom(my_room_1, my_camera, -1.0f, 1.0f); // Render the 3D view
+            renderer.DrawRoom(*(my_camera.room), my_camera, -1.0f, 1.0f); // Render the 3D view
             my_camera.angle += 0.01f;
 
             renderer.EndFrame();
