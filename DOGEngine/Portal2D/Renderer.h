@@ -17,7 +17,7 @@ namespace Portal2D {
         void EndFrame();
 
         void DrawWall(const Portal2D::Wall &wall, int screen_x0, int screen_x1, float y0, float y1);
-        void DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, int clip_x0, int clip_x1);
+        void DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, float clip_l, float clip_r);
 
         SDL_Window *GetSDLWindow();
         SDL_Renderer *GetSDLRenderer();

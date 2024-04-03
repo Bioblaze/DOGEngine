@@ -68,7 +68,7 @@ void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, int screen_x0, int
     SDL_RenderGeometry(this->sdl_renderer, nullptr, sdl_array + 2, 3, nullptr, 0);
 }
 
-void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, int clip_x0, int clip_x1) {
+void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, float clip_l, float clip_r) {
     float cos_angle = cosf(camera.angle);
     float sin_angle = sinf(camera.angle);
     
@@ -92,25 +92,21 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
         float x1_r = x1 * cos_angle - y1 * sin_angle;
         float y1_r = x1 * sin_angle + y1 * cos_angle;
         
-        // Clip the walls to the 2D camera frustum (TODO: reduce frustum as
-        // other rooms are rendered, using clip_x0 and clip_x1).
+        // Clip the walls to the 2D camera frustum.
         
-        float kp = (x0_r - y0_r) / ((x0_r - y0_r) - (x1_r - y1_r));
-        
-        if (kp > 0.0f && kp < 1.0f) {
-            x1_r = x0_r + (x1_r - x0_r) * kp;
-            y1_r = y0_r + (y1_r - y0_r) * kp;
+        if (clip_l * y0_r > x0_r) {
+            double lambda = (clip_l * y0_r - x0_r) / ((x1_r - x0_r) - clip_l * (y1_r - y0_r));
+            
+            y0_r += (y1_r - y0_r) * lambda;
+            x0_r += (x1_r - x0_r) * lambda;
         }
         
-        float kn = (x0_r + y0_r) / ((x0_r + y0_r) - (x1_r + y1_r));
-        
-        if (kn > 0.0f && kn < 1.0f) {
-            x0_r = x0_r + (x1_r - x0_r) * kn;
-            y0_r = y0_r + (y1_r - y0_r) * kn;
+        if (clip_r * y1_r < x1_r) {
+            double lambda = (clip_r * y0_r - x0_r) / ((x1_r - x0_r) - clip_r * (y1_r - y0_r));
+            
+            y1_r = y0_r + (y1_r - y0_r) * lambda;
+            x1_r = x0_r + (x1_r - x0_r) * lambda;
         }
-        
-        // TODO: For some reason, certain walls are failing this condition
-        // when they should not.
         
         if (y0_r < 0.0f || y1_r < 0.0f) {
             continue;
@@ -133,10 +129,10 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
         // Everything before this point was just the math necessary to get it
         // working, the code below does the actual rendering with SDL2.
         
-        this->DrawWall(wall, screen_x0, screen_x1, y0_r, y1_r);
-        
-        if (wall.link != nullptr) {
-            this->DrawRoom(*(wall.link->room), camera, screen_x0, screen_x1);
+        if (wall.link == nullptr) {
+            this->DrawWall(wall, screen_x0, screen_x1, y0_r, y1_r);
+        } else {
+            this->DrawRoom(*(wall.link), camera, wall_x0, wall_x1);
         }
     }
 }
