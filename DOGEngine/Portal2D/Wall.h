@@ -7,10 +7,8 @@ namespace Portal2D {
     struct Room;
 
     struct Wall {
-        Room *room;
+        Room *room, *link;
         int point_x, point_y;
-
-        Wall *link;
     };
 };
 

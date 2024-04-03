@@ -22,15 +22,22 @@ int main(int argc, char* args[])
     // Log with current time using DebugLog
     appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
 
-    Portal2D::Room my_room;
+    Portal2D::Room my_room_1, my_room_2;
 
-    my_room.walls.push_back({&my_room, -3, 4, NULL});
-    my_room.walls.push_back({&my_room, 4, 2, NULL});
-    my_room.walls.push_back({&my_room, 5, -2, NULL});
-    my_room.walls.push_back({&my_room, -1, -4, NULL});
-    my_room.walls.push_back({&my_room, -5, 1, NULL});
+    my_room_1.walls.push_back({&my_room_1, NULL, -3, 4});
+    my_room_1.walls.push_back({&my_room_1, &my_room_2, 4, 2});
+    my_room_1.walls.push_back({&my_room_1, NULL, 5, -2});
+    my_room_1.walls.push_back({&my_room_1, NULL, -1, -4});
+    my_room_1.walls.push_back({&my_room_1, NULL, -5, 1});
 
-    Portal2D::Camera my_camera = {0.0f, 0.0f, 0.0f};
+    my_room_2.walls.push_back({&my_room_2, &my_room_1, 5, -2});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, 2});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, 6});
+    my_room_2.walls.push_back({&my_room_2, NULL, 12, 6});
+    my_room_2.walls.push_back({&my_room_2, NULL, 12, -6});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, -6});
+
+    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.0f};
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);
@@ -48,7 +55,7 @@ int main(int argc, char* args[])
 
             renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
-            renderer.DrawRoom(my_room, my_camera, 0, 800); // Render the 3D view
+            renderer.DrawRoom(*(my_camera.room), my_camera, -1.0f, 1.0f); // Render the 3D view
             my_camera.angle += 0.01f;
 
             renderer.EndFrame();
