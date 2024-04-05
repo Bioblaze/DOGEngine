@@ -2,6 +2,8 @@
 //
 #define SDL_MAIN_HANDLED
 #include <iostream>
+#include <map>
+
 #include "Core/Logger.h" 
 #include "Editor/BuildSystem.h"
 #include "Portal2D/Renderer.h"
@@ -56,11 +58,16 @@ int main(int argc, char* args[])
         SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 256);
         renderer.PushTexture(0, test_sdl_texture);
 
+        std::map<int, bool> sdl_keys;
+
         while (running) {
             while (SDL_PollEvent(&event) != 0) {
-                // User requests quit
                 if (event.type == SDL_QUIT) {
                     running = false;
+                } else if (event.type == SDL_KEYDOWN) {
+                    sdl_keys[event.key.keysym.sym] = true;
+                } else if (event.type == SDL_KEYUP) {
+                    sdl_keys[event.key.keysym.sym] = false;
                 }
             }
 
@@ -68,9 +75,23 @@ int main(int argc, char* args[])
             renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
             renderer.DrawRoom(*(my_camera.room), my_camera, -1.0f, 1.0f); // Render the 3D view
-            my_camera.angle += 0.01f;
 
             renderer.EndFrame();
+
+            if (sdl_keys[SDLK_w] || sdl_keys[SDLK_UP]) {
+                my_camera.point_x += sinf(my_camera.angle) * 0.1;
+                my_camera.point_y += cosf(my_camera.angle) * 0.1;
+            }
+
+            if (sdl_keys[SDLK_a] || sdl_keys[SDLK_LEFT]) {
+                my_camera.angle -= 0.05;
+            }
+
+            if (sdl_keys[SDLK_d] || sdl_keys[SDLK_RIGHT]) {
+                my_camera.angle += 0.05;
+            }
+
+            my_camera.Update();
 
             // Clear screen with a color
             //SDL_SetRenderDrawColor(renderer.GetRenderer(), 0xFF, 0xFF, 0xFF, 0xFF); // White

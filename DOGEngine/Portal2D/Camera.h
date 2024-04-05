@@ -10,7 +10,7 @@ namespace Portal2D {
         float point_x, point_y;
         float angle;
 
-        void update();
+        void Update();
     };
 };
 
