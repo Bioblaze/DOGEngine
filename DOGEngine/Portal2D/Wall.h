@@ -9,6 +9,8 @@ namespace Portal2D {
     struct Wall {
         Room *room, *link;
         int point_x, point_y;
+        
+        int texture_id;
     };
 };
 
