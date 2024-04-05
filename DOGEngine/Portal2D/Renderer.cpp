@@ -52,68 +52,65 @@ void Portal2D::Renderer::EndFrame() {
     SDL_RenderPresent(this->sdl_renderer);
 }
 
+void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float texture_l, float texture_r) {
+    float height_y0 = 240.0f / y0;
+    float height_y1 = 240.0f / y1;
+    
+    float quad_x0 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
+    float quad_y0 = this->screen_height * 0.5f - height_y0;
+    
+    float quad_x1 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
+    float quad_y1 = this->screen_height * 0.5f - height_y1;
+    
+    float quad_x2 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
+    float quad_y2 = this->screen_height * 0.5f + height_y1;
+    
+    float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
+    float quad_y3 = this->screen_height * 0.5f + height_y0;
+    
+    const SDL_Vertex sdl_array[] = {
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {texture_l, 0.0f}},
+        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {0, 255, 0, 255}, (SDL_FPoint) {texture_r, 0.0f}},
+        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {0, 0, 255, 255}, (SDL_FPoint) {texture_r, 1.0f}},
+        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 0, 255}, (SDL_FPoint) {texture_l, 1.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {texture_l, 0.0f}},
+    };
+    
+    SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 0, 3, nullptr, 0);
+    SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 2, 3, nullptr, 0);
+}
+
 void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float wall_l, float wall_r) {
     float dx = x1 - x0;
     float dy = y1 - y0;
     
     float dm = sqrtf(dx * dx + dy * dy);
-    float tm = dm / (wall_r - wall_l);
     
     dx /= dm;
     dy /= dm;
     
-    float im = 0.0f;
-    float texture_l = fmodf(tm * wall_l, 1.0f);
+    float decal_l = dm * wall_l;
+    float texture_l = fmodf(decal_l, 1.0f);
     
-    if (wall.point_x == 12 && wall.point_y == 6) {
-        // printf("%.2f (%.2f - %.2f)\n", texture_l, wall_l, wall_r);
-    }
-    
-    while (im < dm) {
-        float jm = im + (1.0f - texture_l);
+    while (decal_l < dm * wall_r) {
+        float decal_r = (decal_l - texture_l) + 1.0f;
         float texture_r = 1.0f;
         
-        if (jm > dm) {
-            texture_r = dm - jm + 1.0f;
-            jm = dm;
+        if (decal_r > dm * wall_r) {
+            decal_r = dm * wall_r;
+            texture_r = decal_r - (decal_l - texture_l);
         }
         
-        float real_x0 = x0 + dx * im;
-        float real_y0 = y0 + dy * im;
+        float decal_x0 = x0 + dx * decal_l;
+        float decal_y0 = y0 + dy * decal_l;
         
-        float real_x1 = x0 + dx * jm;
-        float real_y1 = y0 + dy * jm;
+        float decal_x1 = x0 + dx * decal_r;
+        float decal_y1 = y0 + dy * decal_r;
         
-        // Old rendering code starts here:
-        
-        float height_y0 = 320.0f / real_y0;
-        float height_y1 = 320.0f / real_y1;
-        
-        float quad_x0 = (real_x0 / real_y0 + 1.0f) * this->screen_width * 0.5f;
-        float quad_y0 = this->screen_height * 0.5f - height_y0;
-        
-        float quad_x1 = (real_x1 / real_y1 + 1.0f) * this->screen_width * 0.5f;
-        float quad_y1 = this->screen_height * 0.5f - height_y1;
-        
-        float quad_x2 = (real_x1 / real_y1 + 1.0f) * this->screen_width * 0.5f;
-        float quad_y2 = this->screen_height * 0.5f + height_y1;
-        
-        float quad_x3 = (real_x0 / real_y0 + 1.0f) * this->screen_width * 0.5f;
-        float quad_y3 = this->screen_height * 0.5f + height_y0;
-        
-        const SDL_Vertex sdl_array[] = {
-            {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {texture_l, 0.0f}},
-            {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {0, 255, 0, 255}, (SDL_FPoint) {texture_r, 0.0f}},
-            {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {0, 0, 255, 255}, (SDL_FPoint) {texture_r, 1.0f}},
-            {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 0, 255}, (SDL_FPoint) {texture_l, 1.0f}},
-            {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {texture_l, 0.0f}},
-        };
-        
-        SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 0, 3, nullptr, 0);
-        SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 2, 3, nullptr, 0);
+        this->DrawDecal(wall, decal_x0, decal_y0, decal_x1, decal_y1, texture_l, texture_r);
         
         texture_l = 0.0f;
-        im = jm;
+        decal_l = decal_r;
     }
 }
 
@@ -147,31 +144,27 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
         float wall_r = 1.0f;
         
         if (clip_l * y0_r > x0_r) {
-            double lambda = (clip_l * y0_r - x0_r) / ((x1_r - x0_r) - clip_l * (y1_r - y0_r));
-            wall_l = lambda;
-            
-            x0_r = x0_r + (x1_r - x0_r) * lambda;
-            y0_r = y0_r + (y1_r - y0_r) * lambda;
+            wall_l = (clip_l * y0_r - x0_r) / ((x1_r - x0_r) - clip_l * (y1_r - y0_r));
         }
         
         if (clip_r * y1_r < x1_r) {
-            double lambda = (clip_r * y0_r - x0_r) / ((x1_r - x0_r) - clip_r * (y1_r - y0_r));
-            wall_r = lambda;
-            
-            x1_r = x0_r + (x1_r - x0_r) * lambda;
-            y1_r = y0_r + (y1_r - y0_r) * lambda;
+            wall_r = (clip_r * y0_r - x0_r) / ((x1_r - x0_r) - clip_r * (y1_r - y0_r));
         }
         
-        if (y0_r < 0.0f || y1_r < 0.0f) {
+        if (y0_r + (y1_r - y0_r) * wall_l < 0.0f || y0_r + (y1_r - y0_r) * wall_r < 0.0f) {
             continue;
         }
         
-        // wall_x0 - wall_x1 defines its linear projection.
+        float clip_x0 = x0_r + (x1_r - x0_r) * wall_l;
+        float clip_y0 = y0_r + (y1_r - y0_r) * wall_l;
         
-        float wall_x0 = x0_r / y0_r;
-        float wall_x1 = x1_r / y1_r;
+        float clip_x1 = x0_r + (x1_r - x0_r) * wall_r;
+        float clip_y1 = y0_r + (y1_r - y0_r) * wall_r;
         
-        if (wall_x0 >= wall_x1) {
+        float view_x0 = clip_x0 / clip_y0;
+        float view_x1 = clip_x1 / clip_y1;
+        
+        if (view_x0 >= view_x1) {
             continue;
         }
         
@@ -181,7 +174,7 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
         if (wall.link == nullptr) {
             this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, wall_l, wall_r);
         } else {
-            this->DrawRoom(*(wall.link), camera, wall_x0, wall_x1);
+            this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
         }
     }
 }
