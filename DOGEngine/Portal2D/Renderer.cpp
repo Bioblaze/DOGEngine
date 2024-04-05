@@ -65,8 +65,14 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
         {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 0.0f}},
     };
     
-    SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 0, 3, nullptr, 0);
-    SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 2, 3, nullptr, 0);
+    SDL_Texture *sdl_texture = nullptr;
+    
+    if (this->sdl_textures.count(wall.texture_id)) {
+        sdl_texture = this->sdl_textures[wall.texture_id];
+    }
+    
+    SDL_RenderGeometry(this->sdl_renderer, sdl_texture, sdl_array + 0, 3, nullptr, 0);
+    SDL_RenderGeometry(this->sdl_renderer, sdl_texture, sdl_array + 2, 3, nullptr, 0);
 }
 
 void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float wall_l, float wall_r) {
