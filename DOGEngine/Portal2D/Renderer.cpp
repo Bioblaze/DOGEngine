@@ -58,11 +58,11 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
     float quad_y3 = this->screen_height * 0.5f + height_y0;
     
     const SDL_Vertex sdl_array[] = {
-        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {texture_l, 0.0f}},
-        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {0, 255, 0, 255}, (SDL_FPoint) {texture_r, 0.0f}},
-        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {0, 0, 255, 255}, (SDL_FPoint) {texture_r, 1.0f}},
-        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 0, 255}, (SDL_FPoint) {texture_l, 1.0f}},
-        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 0, 0, 255}, (SDL_FPoint) {texture_l, 0.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 0.0f}},
+        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_r, 0.0f}},
+        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_r, 1.0f}},
+        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 1.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 0.0f}},
     };
     
     SDL_RenderGeometry(this->sdl_renderer, this->sdl_textures[0], sdl_array + 0, 3, nullptr, 0);
