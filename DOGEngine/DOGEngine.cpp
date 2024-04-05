@@ -44,6 +44,18 @@ int main(int argc, char* args[])
         bool running = true;
         SDL_Event event;
 
+        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 256, 256);
+        uint8_t test_pixels[65536];
+
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                test_pixels[j + i * 256] = i ^ j;
+            }
+        }
+
+        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 256);
+        renderer.PushTexture(0, test_sdl_texture);
+
         while (running) {
             while (SDL_PollEvent(&event) != 0) {
                 // User requests quit

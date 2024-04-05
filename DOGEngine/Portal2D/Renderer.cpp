@@ -12,26 +12,15 @@ Portal2D::Renderer::Renderer(const char *title, int width, int height) {
     this->sdl_renderer = SDL_CreateRenderer(this->sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     assert(this->sdl_renderer != nullptr);
     
-    // TODO: Create test_sdl_texture in a separate function just for
-    // doing so.
-    
-    SDL_Texture *test_sdl_texture = SDL_CreateTexture(this->sdl_renderer, SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 256, 256);
-    uint8_t test_pixels[65536];
-    
-    for (int i = 0; i < 256; i++) {
-        for (int j = 0; j < 256; j++) {
-            test_pixels[j + i * 256] = i ^ j;
-        }
-    }
-    
-    SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 256);
-    this->sdl_textures.push_back(test_sdl_texture);
-    
     this->screen_width = width;
     this->screen_height = height;
 }
 
 Portal2D::Renderer::~Renderer() {
+    for (auto &p : this->sdl_textures) {
+        SDL_DestroyTexture(p.second);
+    }
+
     if (this->sdl_renderer) {
         SDL_DestroyRenderer(this->sdl_renderer);
     }
@@ -177,6 +166,10 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
             this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
         }
     }
+}
+
+void Portal2D::Renderer::PushTexture(int id, SDL_Texture *sdl_texture) {
+    this->sdl_textures[id] = sdl_texture;
 }
 
 SDL_Window *Portal2D::Renderer::GetSDLWindow() {
