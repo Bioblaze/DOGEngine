@@ -39,7 +39,7 @@ int main(int argc, char* args[])
     my_room_2.walls.push_back({&my_room_2, NULL, 12, -6, 0});
     my_room_2.walls.push_back({&my_room_2, NULL, 4, -6, 0});
 
-    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.0f};
+    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);

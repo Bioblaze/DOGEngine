@@ -6,9 +6,11 @@
 namespace Portal2D {
     struct Camera {
         Room *room;
-        
+
         float point_x, point_y;
         float angle;
+
+        float old_point_x, old_point_y;
 
         void Update();
     };
