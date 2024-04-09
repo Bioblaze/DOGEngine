@@ -26,36 +26,36 @@ int main(int argc, char* args[])
 
     Portal2D::Room my_room_1, my_room_2;
 
-    my_room_1.walls.push_back({&my_room_1, NULL, -3, 4, 0});
-    my_room_1.walls.push_back({&my_room_1, &my_room_2, 4, 2, 0});
-    my_room_1.walls.push_back({&my_room_1, NULL, 5, -2, 0});
-    my_room_1.walls.push_back({&my_room_1, NULL, -1, -4, 0});
-    my_room_1.walls.push_back({&my_room_1, NULL, -5, 1, 0});
+    my_room_1.walls.push_back({&my_room_1, NULL, -3, 4, 0, 1.0f});
+    my_room_1.walls.push_back({&my_room_1, &my_room_2, 4, 2, 0, 1.0f});
+    my_room_1.walls.push_back({&my_room_1, NULL, 5, -2, 0, 1.0f});
+    my_room_1.walls.push_back({&my_room_1, NULL, -1, -4, 0, 1.0f});
+    my_room_1.walls.push_back({&my_room_1, NULL, -5, 1, 0, 1.0f});
 
-    my_room_2.walls.push_back({&my_room_2, &my_room_1, 5, -2, 0});
-    my_room_2.walls.push_back({&my_room_2, NULL, 4, 2, 0});
-    my_room_2.walls.push_back({&my_room_2, NULL, 4, 6, 0});
-    my_room_2.walls.push_back({&my_room_2, NULL, 12, 6, 0});
-    my_room_2.walls.push_back({&my_room_2, NULL, 12, -6, 0});
-    my_room_2.walls.push_back({&my_room_2, NULL, 4, -6, 0});
+    my_room_2.walls.push_back({&my_room_2, &my_room_1, 5, -2, 0, 4.0f});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, 2, 0, 4.0f});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, 6, 0, 4.0f});
+    my_room_2.walls.push_back({&my_room_2, NULL, 12, 6, 0, 4.0f});
+    my_room_2.walls.push_back({&my_room_2, NULL, 12, -6, 0, 4.0f});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, -6, 0, 4.0f});
 
-    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);
         bool running = true;
         SDL_Event event;
 
-        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 256, 256);
-        uint8_t test_pixels[65536];
+        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 1024, 1024);
+        uint8_t test_pixels[1048576];
 
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 256; j++) {
-                test_pixels[j + i * 256] = i ^ j;
+        for (int i = 0; i < 1024; i++) {
+            for (int j = 0; j < 1024; j++) {
+                test_pixels[j + i * 1024] = (i ^ j) ^ ((i ^ j) >> 8);
             }
         }
 
-        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 256);
+        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 1024);
         renderer.PushTexture(0, test_sdl_texture);
 
         std::map<int, bool> sdl_keys;
