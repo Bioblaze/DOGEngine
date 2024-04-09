@@ -11,6 +11,7 @@ namespace Portal2D {
         int point_x, point_y;
         
         int texture_id;
+        float height_z;
     };
 };
 
