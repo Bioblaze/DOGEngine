@@ -43,6 +43,7 @@ void Portal2D::Renderer::EndFrame() {
 
 void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float texture_l, float texture_r) {
     const float scale = this->screen_height * 0.5f;
+    const float halve = 8.0f;
     
     float quad_x0 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
     float quad_y0 = scale + ((scale * (z - wall.height_z)) / y0);
@@ -55,6 +56,18 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
     
     float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
     float quad_y3 = scale + ((scale * z) / y0);
+    
+    if (quad_x1 - quad_x0 > halve) {
+        float xm = (x0 + x1) * 0.5f;
+        float ym = (y0 + y1) * 0.5f;
+        
+        float texture_m = (texture_l + texture_r) * 0.5f;
+        
+        this->DrawDecal(wall, x0, y0, xm, ym, z, texture_l, texture_m);
+        this->DrawDecal(wall, xm, ym, x1, y1, z, texture_m, texture_r);
+        
+        return;
+    }
     
     const SDL_Vertex sdl_array[] = {
         {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 0.0f}},
