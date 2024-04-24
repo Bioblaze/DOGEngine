@@ -18,7 +18,7 @@ namespace Portal2D {
         void EndFrame();
 
         void DrawDecal(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float texture_l, float texture_r);
-        void DrawFloor(const Portal2D::Camera &camera, float x0, float y0, float x1, float y1, float z, bool is_floor);
+        void DrawFloor(const Portal2D::Camera &camera, float x0, float y0, float x1, float y1, float z, Portal2D::Color color, bool is_floor);
 
         void DrawWall(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float wall_l, float wall_r);
 

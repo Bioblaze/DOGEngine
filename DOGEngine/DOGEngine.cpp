@@ -34,6 +34,9 @@ int main(int argc, char* args[])
 
     my_room_1.height_z = 1.0f;
 
+    my_room_1.f_color = {170.0f, 85.0f, 0.0f};
+    my_room_1.c_color = {170.0f, 170.0f, 170.0f};
+
     my_room_2.walls.push_back({&my_room_2, &my_room_1, 5, -2, 0});
     my_room_2.walls.push_back({&my_room_2, NULL, 4, 2, 0});
     my_room_2.walls.push_back({&my_room_2, NULL, 4, 6, 0});
@@ -42,6 +45,9 @@ int main(int argc, char* args[])
     my_room_2.walls.push_back({&my_room_2, NULL, 4, -6, 0});
 
     my_room_2.height_z = 4.0f;
+
+    my_room_2.f_color = {255.0f, 170.0f, 85.0f};
+    my_room_2.c_color = {85.0f, 170.0f, 255.0f};
 
     Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
 

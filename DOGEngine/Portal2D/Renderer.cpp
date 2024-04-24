@@ -87,7 +87,7 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
     SDL_RenderGeometry(this->sdl_renderer, sdl_texture, sdl_array + 2, 3, nullptr, 0);
 }
 
-void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, float y0, float x1, float y1, float z, bool is_floor) {
+void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, float y0, float x1, float y1, float z, Portal2D::Color color, bool is_floor) {
     const float scale = this->screen_height * 0.5f;
     
     float quad_x0 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
@@ -102,12 +102,18 @@ void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, flo
     float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
     float quad_y3 = (is_floor ? this->screen_height : 0.0f);
     
+    const SDL_Color sdl_color = {
+        (int)(std::min(std::max(color.red, 0.0f), 255.0f)),
+        (int)(std::min(std::max(color.green, 0.0f), 255.0f)),
+        (int)(std::min(std::max(color.blue, 0.0f), 255.0f)),
+    };
+    
     const SDL_Vertex sdl_array[] = {
-        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {0.0f, 0.0f}},
-        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {0.0f, 0.0f}},
-        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {0.0f, 0.0f}},
-        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {0.0f, 0.0f}},
-        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, sdl_color, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x1, quad_y1}, sdl_color, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x2, quad_y2}, sdl_color, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x3, quad_y3}, sdl_color, (SDL_FPoint) {0.0f, 0.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, sdl_color, (SDL_FPoint) {0.0f, 0.0f}},
     };
     
     SDL_RenderGeometry(this->sdl_renderer, nullptr, sdl_array + 0, 3, nullptr, 0);
@@ -211,8 +217,8 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
             this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
         }
         
-        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z, true);
-        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z - room.height_z, false);
+        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z, room.f_color, true);
+        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z - room.height_z, room.c_color, false);
     }
 }
 
