@@ -11,6 +11,58 @@ void Portal2D::Camera::Update() {
     
     const float radius = 0.125f;
     
+    const float x2 = this->old_point_x;
+    const float y2 = this->old_point_y;
+    
+    float x3 = this->point_x;
+    float y3 = this->point_y;
+    
+    for (auto i = 0; i < this->room->walls.size(); i++) {
+        const Portal2D::Wall &wall = this->room->walls[i];
+        auto j = (i + 1) % this->room->walls.size();
+        
+        // (x0, y0) - (x1, y1) defines the wall as it exists.
+        
+        const float x0 = wall.point_x;
+        const float y0 = wall.point_y;
+        
+        const float x1 = this->room->walls[j].point_x;
+        const float y1 = this->room->walls[j].point_y;
+        
+        // A and B are scalars that indicate where in the lines
+        // intersections occurred.
+        
+        const float d = (x0 - x1) * (y2 - y3) - (y0 - y1) * (x2 - x3);
+        
+        if (d == 0.0f) {
+            continue;
+        }
+        
+        const float a = ((x0 - x2) * (y2 - y3) - (y0 - y2) * (x2 - x3)) / d;
+        const float b = ((x0 - x2) * (y0 - y1) - (y0 - y2) * (x0 - x1)) / d;
+        
+        // Discard interaction if we collided just with the wall
+        // line, and not with the actual segment.
+        
+        if (a < 0.0f || a > 1.0f) {
+            continue;
+        }
+        
+        // Now, let the magic begin!
+        
+        if (wall.link == nullptr) {
+            // TODO
+        } else {
+            if (b < 0.0f || b > 1.0f) {
+                continue;
+            }
+            
+            this->room = wall.link;
+            break;
+        }
+    }
+    
+    /*
     float cx = this->old_point_x;
     float cy = this->old_point_y;
     
@@ -85,4 +137,8 @@ void Portal2D::Camera::Update() {
     
     this->point_x = this->old_point_x = cx;
     this->point_y = this->old_point_y = cy;
+    */
+    
+    this->old_point_x = this->point_x = x3;
+    this->old_point_y = this->point_y = y3;
 }
