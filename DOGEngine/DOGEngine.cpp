@@ -97,6 +97,11 @@ int main(int argc, char* args[])
                 my_camera.angle -= 0.05;
             }
 
+            if (sdl_keys[SDLK_s] || sdl_keys[SDLK_DOWN]) {
+                my_camera.point_x -= sinf(my_camera.angle) * 0.1;
+                my_camera.point_y -= cosf(my_camera.angle) * 0.1;
+            }
+
             if (sdl_keys[SDLK_d] || sdl_keys[SDLK_RIGHT]) {
                 my_camera.angle += 0.05;
             }
