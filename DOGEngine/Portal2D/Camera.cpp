@@ -51,7 +51,21 @@ void Portal2D::Camera::Update() {
         // Now, let the magic begin!
         
         if (wall.link == nullptr) {
-            // TODO
+            const float cos_d = sqrtf(((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1)) * ((x2 - x3) * (x2 - x3) + (y2 - y3) * (y2 - y3)));
+            
+            if (cos_d == 0.0f) {
+                continue;
+            }
+            
+            const float cos_x = fabsf(d) / cos_d;
+            
+            const float b_delta = (radius / cos_x) / sqrtf((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
+            const float b_final = b - 0.0f * b_delta;
+            
+            if (b_final > 0.0f && b_final < 1.0f) {
+                x3 = x2 + (x3 - x2) * b_final * 0.5f;
+                y3 = y2 + (y3 - y2) * b_final * 0.5f;
+            }
         } else {
             if (b < 0.0f || b > 1.0f) {
                 continue;
