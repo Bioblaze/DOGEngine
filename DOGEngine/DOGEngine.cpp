@@ -22,7 +22,7 @@ int main(int argc, char* args[])
     std::string timeString = appLogger.GetTimestamp();
 
     // Log with current time using DebugLog
-    appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
+    appLogger.DebugLog("Hello with fmt! Current time: {}", timeString.c_str());
 
     Portal2D::Room my_room_1, my_room_2;
 
