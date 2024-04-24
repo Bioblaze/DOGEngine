@@ -8,6 +8,7 @@
 namespace Portal2D {
     struct Room {
         std::vector<Wall> walls;
+        float height_z;
     };
 };
 
