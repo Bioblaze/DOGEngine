@@ -22,22 +22,32 @@ int main(int argc, char* args[])
     std::string timeString = appLogger.GetTimestamp();
 
     // Log with current time using DebugLog
-    appLogger.DebugLog("Hello with fmt! Current time: %s", timeString.c_str());
+    appLogger.DebugLog("Hello with fmt! Current time: {}", timeString.c_str());
 
     Portal2D::Room my_room_1, my_room_2;
 
-    my_room_1.walls.push_back({&my_room_1, NULL, -3, 4, 0, 1.0f});
-    my_room_1.walls.push_back({&my_room_1, &my_room_2, 4, 2, 0, 1.0f});
-    my_room_1.walls.push_back({&my_room_1, NULL, 5, -2, 0, 1.0f});
-    my_room_1.walls.push_back({&my_room_1, NULL, -1, -4, 0, 1.0f});
-    my_room_1.walls.push_back({&my_room_1, NULL, -5, 1, 0, 1.0f});
+    my_room_1.walls.push_back({&my_room_1, NULL, -3, 4, 0});
+    my_room_1.walls.push_back({&my_room_1, &my_room_2, 4, 2, 0});
+    my_room_1.walls.push_back({&my_room_1, NULL, 5, -2, 0});
+    my_room_1.walls.push_back({&my_room_1, NULL, -1, -4, 0});
+    my_room_1.walls.push_back({&my_room_1, NULL, -5, 1, 0});
 
-    my_room_2.walls.push_back({&my_room_2, &my_room_1, 5, -2, 0, 4.0f});
-    my_room_2.walls.push_back({&my_room_2, NULL, 4, 2, 0, 4.0f});
-    my_room_2.walls.push_back({&my_room_2, NULL, 4, 6, 0, 4.0f});
-    my_room_2.walls.push_back({&my_room_2, NULL, 12, 6, 0, 4.0f});
-    my_room_2.walls.push_back({&my_room_2, NULL, 12, -6, 0, 4.0f});
-    my_room_2.walls.push_back({&my_room_2, NULL, 4, -6, 0, 4.0f});
+    my_room_1.height_z = 1.0f;
+
+    my_room_1.f_color = {170.0f, 85.0f, 0.0f};
+    my_room_1.c_color = {170.0f, 170.0f, 170.0f};
+
+    my_room_2.walls.push_back({&my_room_2, &my_room_1, 5, -2, 0});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, 2, 0});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, 6, 0});
+    my_room_2.walls.push_back({&my_room_2, NULL, 12, 6, 0});
+    my_room_2.walls.push_back({&my_room_2, NULL, 12, -6, 0});
+    my_room_2.walls.push_back({&my_room_2, NULL, 4, -6, 0});
+
+    my_room_2.height_z = 4.0f;
+
+    my_room_2.f_color = {255.0f, 170.0f, 85.0f};
+    my_room_2.c_color = {85.0f, 170.0f, 255.0f};
 
     Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
 
@@ -85,6 +95,11 @@ int main(int argc, char* args[])
 
             if (sdl_keys[SDLK_a] || sdl_keys[SDLK_LEFT]) {
                 my_camera.angle -= 0.05;
+            }
+
+            if (sdl_keys[SDLK_s] || sdl_keys[SDLK_DOWN]) {
+                my_camera.point_x -= sinf(my_camera.angle) * 0.1;
+                my_camera.point_y -= cosf(my_camera.angle) * 0.1;
             }
 
             if (sdl_keys[SDLK_d] || sdl_keys[SDLK_RIGHT]) {
