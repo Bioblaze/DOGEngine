@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 
@@ -158,9 +159,73 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
     float cos_angle = cosf(camera.angle);
     float sin_angle = sinf(camera.angle);
     
-    for (auto i = 0; i < room.walls.size(); i++) {
+    // FIRST PASS: reorder walls using their midpoint (after clipping).
+    
+    std::vector<std::pair<float, int>> wall_ys(room.walls.size());
+    
+    // TODO: leave figuring out a structure to reuse calculated values
+    // for tomorrow, I'm tired :p.
+    
+    for (int i = 0; i < room.walls.size(); i++) {
         const Portal2D::Wall &wall = room.walls[i];
-        auto j = (i + 1) % room.walls.size();
+        int j = (i + 1) % room.walls.size();
+        
+        // (x0, y0) - (x1, y1) defines the wall as it exists.
+        
+        float x0 = wall.point_x - camera.point_x;
+        float y0 = wall.point_y - camera.point_y;
+        
+        float x1 = room.walls[j].point_x - camera.point_x;
+        float y1 = room.walls[j].point_y - camera.point_y;
+        
+        // (x0_r, y0_r) - (x1_r, y1_r) defines the wall after its rotation.
+        
+        float x0_r = x0 * cos_angle - y0 * sin_angle;
+        float y0_r = x0 * sin_angle + y0 * cos_angle;
+        
+        float x1_r = x1 * cos_angle - y1 * sin_angle;
+        float y1_r = x1 * sin_angle + y1 * cos_angle;
+        
+        // Clip the walls to the 2D camera frustum.
+        
+        float wall_l = 0.0f;
+        float wall_r = 1.0f;
+        
+        if (clip_l * y0_r > x0_r) {
+            wall_l = (clip_l * y0_r - x0_r) / ((x1_r - x0_r) - clip_l * (y1_r - y0_r));
+        }
+        
+        if (clip_r * y1_r < x1_r) {
+            wall_r = (clip_r * y0_r - x0_r) / ((x1_r - x0_r) - clip_r * (y1_r - y0_r));
+        }
+        
+        if (y0_r + (y1_r - y0_r) * wall_l < 0.0f || y0_r + (y1_r - y0_r) * wall_r < 0.0f) {
+            wall_ys[i] = {0.0f, -1};
+            continue;
+        }
+        
+        float clip_x0 = x0_r + (x1_r - x0_r) * wall_l;
+        float clip_y0 = y0_r + (y1_r - y0_r) * wall_l;
+        
+        float clip_x1 = x0_r + (x1_r - x0_r) * wall_r;
+        float clip_y1 = y0_r + (y1_r - y0_r) * wall_r;
+        
+        wall_ys[i] = {clip_y0 + clip_y1, i};
+    }
+    
+    std::sort(wall_ys.begin(), wall_ys.end());
+    
+    // SECOND PASS: actually render them.
+    
+    for (int _i = room.walls.size() - 1; _i >= 0; _i--) {
+        const int i = wall_ys[_i].second;
+        
+        if (i < 0) {
+            continue;
+        }
+        
+        const Portal2D::Wall &wall = room.walls[i];
+        int j = (i + 1) % room.walls.size();
         
         // (x0, y0) - (x1, y1) defines the wall as it exists.
         
