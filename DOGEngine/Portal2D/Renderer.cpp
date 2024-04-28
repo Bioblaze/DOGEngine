@@ -97,10 +97,10 @@ void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, flo
     float quad_y1 = scale + ((scale * z) / y1);
     
     float quad_x2 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y2 = (is_floor ? this->screen_height : 0.0f);
+    float quad_y2 = (is_floor ? this->screen_height * 2.0f : -this->screen_height);
     
     float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y3 = (is_floor ? this->screen_height : 0.0f);
+    float quad_y3 = (is_floor ? this->screen_height * 2.0f : -this->screen_height);
     
     const SDL_Color sdl_color = {
         (int)(std::min(std::max(color.red, 0.0f), 255.0f)),
@@ -215,6 +215,10 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
             this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z, room.height_z, wall_l, wall_r);
         } else {
             this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
+            
+            if (wall.link->height_z < room.height_z) {
+                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r);
+            }
         }
         
         this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z, room.f_color, true);
