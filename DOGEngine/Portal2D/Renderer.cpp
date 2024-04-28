@@ -42,7 +42,7 @@ void Portal2D::Renderer::EndFrame() {
     SDL_RenderPresent(this->sdl_renderer);
 }
 
-void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float texture_l, float texture_r, float texture_d) {
+void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float texture_l, float texture_r, float texture_d, float shade) {
     const float scale = this->screen_height * 0.5f;
     const float halve = 8.0f;
     
@@ -64,18 +64,20 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
         
         float texture_m = (texture_l + texture_r) * 0.5f;
         
-        this->DrawDecal(wall, x0, y0, xm, ym, z, height_z, texture_l, texture_m, texture_d);
-        this->DrawDecal(wall, xm, ym, x1, y1, z, height_z, texture_m, texture_r, texture_d);
+        this->DrawDecal(wall, x0, y0, xm, ym, z, height_z, texture_l, texture_m, texture_d, shade);
+        this->DrawDecal(wall, xm, ym, x1, y1, z, height_z, texture_m, texture_r, texture_d, shade);
         
         return;
     }
     
+    const int v = (int)(shade * 255.0f);
+    
     const SDL_Vertex sdl_array[] = {
-        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 1.0f}},
-        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_r, 1.0f}},
-        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_r, texture_d}},
-        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, texture_d}},
-        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {255, 255, 255, 255}, (SDL_FPoint) {texture_l, 1.0f}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {v, v, v, 255}, (SDL_FPoint) {texture_l, 1.0f}},
+        {(SDL_FPoint) {quad_x1, quad_y1}, (SDL_Color) {v, v, v, 255}, (SDL_FPoint) {texture_r, 1.0f}},
+        {(SDL_FPoint) {quad_x2, quad_y2}, (SDL_Color) {v, v, v, 255}, (SDL_FPoint) {texture_r, texture_d}},
+        {(SDL_FPoint) {quad_x3, quad_y3}, (SDL_Color) {v, v, v, 255}, (SDL_FPoint) {texture_l, texture_d}},
+        {(SDL_FPoint) {quad_x0, quad_y0}, (SDL_Color) {v, v, v, 255}, (SDL_FPoint) {texture_l, 1.0f}},
     };
     
     SDL_Texture *sdl_texture = nullptr;
@@ -121,7 +123,7 @@ void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, flo
     SDL_RenderGeometry(this->sdl_renderer, nullptr, sdl_array + 2, 3, nullptr, 0);
 }
 
-void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float wall_l, float wall_r, float wall_d) {
+void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float wall_l, float wall_r, float wall_d, float shade) {
     float dx = x1 - x0;
     float dy = y1 - y0;
     
@@ -154,7 +156,7 @@ void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0
         while (decal_z < height_z) {
             float decal_h = 1.0f - texture_d;
             
-            this->DrawDecal(wall, decal_x0, decal_y0, decal_x1, decal_y1, z - decal_z, decal_h, texture_l, texture_r, texture_d);
+            this->DrawDecal(wall, decal_x0, decal_y0, decal_x1, decal_y1, z - decal_z, decal_h, texture_l, texture_r, texture_d, shade);
             
             texture_d = 0.0f;
             decal_z += decal_h;
@@ -283,17 +285,24 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
             continue;
         }
         
+        // Get, using some approximations, the shade level for the wall.
+        
+        float tan_w = (y1 - y0) / (x1 - x0);
+        float cos_w = 1.0f / (1.0f + (tan_w * tan_w) / 3.0f);
+        
+        float shade = (cos_w + 3.0f) * 0.25f;
+        
         // Everything before this point was just the math necessary to get it
         // working, the code below does the actual rendering with SDL2.
         
         if (wall.link == nullptr) {
-            this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z, room.height_z, wall_l, wall_r, 0.0f);
+            this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z, room.height_z, wall_l, wall_r, 0.0f, shade);
         } else {
             this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
             
             if (wall.link->height_z < room.height_z) {
                 float wall_d = fmodf(wall.link->height_z, 1.0f);
-                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r, wall_d);
+                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r, wall_d, shade);
             }
         }
         
