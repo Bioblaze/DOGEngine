@@ -100,10 +100,10 @@ void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, flo
     float quad_y1 = scale + ((scale * z) / y1);
     
     float quad_x2 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y2 = (is_floor ? this->screen_height * 2.0f : -this->screen_height);
+    float quad_y2 = (is_floor ? (this->screen_height * 10.0f) : (-9.0f * this->screen_height));
     
     float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y3 = (is_floor ? this->screen_height * 2.0f : -this->screen_height);
+    float quad_y3 = (is_floor ? (this->screen_height * 10.0f) : (-9.0f * this->screen_height));
     
     const SDL_Color sdl_color = {
         (int)(std::min(std::max(color.red, 0.0f), 255.0f)),
