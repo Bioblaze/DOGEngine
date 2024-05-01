@@ -83,6 +83,7 @@ int main(int argc, char* args[])
             }
 
 
+            SDL_GetWindowSize(renderer.GetSDLWindow(), &renderer.screen_width, &renderer.screen_height);
             renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
             renderer.DrawRoom(*(my_camera.room), my_camera, -1.0f, 1.0f); // Render the 3D view

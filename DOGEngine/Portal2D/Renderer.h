@@ -33,14 +33,14 @@ namespace Portal2D {
 
         std::pair<int, int> GetScreenSize();
 
+        int screen_width;
+        int screen_height;
+
     private:
         SDL_Window *sdl_window;
         SDL_Renderer *sdl_renderer;
 
         std::unordered_map<int, SDL_Texture *> sdl_textures;
-
-        int screen_width;
-        int screen_height;
     };
 };
 
