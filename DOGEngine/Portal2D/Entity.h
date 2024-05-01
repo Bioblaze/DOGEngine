@@ -7,6 +7,9 @@ namespace Portal2D {
     struct Entity {
         Room *room;
 
+        float radius, height_z, view_z;
+        int texture_id;
+
         float point_x, point_y, point_z;
         float angle;
 

@@ -296,18 +296,18 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::En
         // working, the code below does the actual rendering with SDL2.
         
         if (wall.link == nullptr) {
-            this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z, room.height_z, wall_l, wall_r, 0.0f, shade);
+            this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, (camera.point_z + camera.view_z), room.height_z, wall_l, wall_r, 0.0f, shade);
         } else {
             this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
             
             if (wall.link->height_z < room.height_z) {
                 float wall_d = fmodf(wall.link->height_z, 1.0f);
-                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r, wall_d, shade);
+                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, (camera.point_z + camera.view_z) - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r, wall_d, shade);
             }
         }
         
-        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z, room.f_color, true);
-        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z - room.height_z, room.c_color, false);
+        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, (camera.point_z + camera.view_z), room.f_color, true);
+        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, (camera.point_z + camera.view_z) - room.height_z, room.c_color, false);
     }
 }
 
