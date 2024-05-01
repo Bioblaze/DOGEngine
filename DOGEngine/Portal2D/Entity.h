@@ -1,10 +1,10 @@
-#ifndef PORTAL2D_CAMERA_H
-#define PORTAL2D_CAMERA_H
+#ifndef PORTAL2D_ENTITY_H
+#define PORTAL2D_ENTITY_H
 
 #include "Room.h"
 
 namespace Portal2D {
-    struct Camera {
+    struct Entity {
         Room *room;
 
         float point_x, point_y, point_z;
@@ -16,4 +16,4 @@ namespace Portal2D {
     };
 };
 
-#endif // PORTAL2D_CAMERA_H
+#endif // PORTAL2D_ENTITY_H

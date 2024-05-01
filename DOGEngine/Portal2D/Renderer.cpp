@@ -90,7 +90,7 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
     SDL_RenderGeometry(this->sdl_renderer, sdl_texture, sdl_array + 2, 3, nullptr, 0);
 }
 
-void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, float y0, float x1, float y1, float z, Portal2D::Color color, bool is_floor) {
+void Portal2D::Renderer::DrawFloor(const Portal2D::Entity &camera, float x0, float y0, float x1, float y1, float z, Portal2D::Color color, bool is_floor) {
     const float scale = this->screen_height * 0.5f;
     
     float quad_x0 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
@@ -167,7 +167,7 @@ void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0
     }
 }
 
-void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, float clip_l, float clip_r) {
+void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Entity &camera, float clip_l, float clip_r) {
     float cos_angle = cosf(camera.angle);
     float sin_angle = sinf(camera.angle);
     

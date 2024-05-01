@@ -1,11 +1,9 @@
 #include <cmath>
 
-#include "Camera.h"
+#include "Entity.h"
 #include "Room.h"
 
-#include <cstdio>
-
-void Portal2D::Camera::Update() {
+void Portal2D::Entity::Update() {
     const float radius = 0.125f;
     
     const float x2 = this->old_point_x;

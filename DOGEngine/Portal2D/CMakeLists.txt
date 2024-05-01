@@ -1,4 +1,4 @@
 target_sources(dog-engine
-  PRIVATE Camera.cpp
+  PRIVATE Entity.cpp
   PRIVATE Renderer.cpp
 )
