@@ -7,7 +7,7 @@
 Portal2D::Renderer::Renderer(const char *title, int width, int height) {
     assert(SDL_Init(SDL_INIT_VIDEO) >= 0);
     
-    this->sdl_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+    this->sdl_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     assert(this->sdl_window != nullptr);
     
     this->sdl_renderer = SDL_CreateRenderer(this->sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -43,20 +43,20 @@ void Portal2D::Renderer::EndFrame() {
 }
 
 void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y0, float x1, float y1, float z, float height_z, float texture_l, float texture_r, float texture_d, float shade) {
-    const float scale = this->screen_height * 0.5f;
+    const float scale = this->screen_width * 0.5f;
     const float halve = 8.0f;
     
     float quad_x0 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y0 = scale + ((scale * (z - height_z)) / y0);
+    float quad_y0 = this->screen_height * 0.5f + ((scale * (z - height_z)) / y0);
     
     float quad_x1 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y1 = scale + ((scale * (z - height_z)) / y1);
+    float quad_y1 = this->screen_height * 0.5f + ((scale * (z - height_z)) / y1);
     
     float quad_x2 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y2 = scale + ((scale * z) / y1);
+    float quad_y2 = this->screen_height * 0.5f + ((scale * z) / y1);
     
     float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y3 = scale + ((scale * z) / y0);
+    float quad_y3 = this->screen_height * 0.5f + ((scale * z) / y0);
     
     if (quad_x1 - quad_x0 > halve) {
         float xm = (x0 + x1) * 0.5f;
@@ -90,20 +90,20 @@ void Portal2D::Renderer::DrawDecal(const Portal2D::Wall &wall, float x0, float y
     SDL_RenderGeometry(this->sdl_renderer, sdl_texture, sdl_array + 2, 3, nullptr, 0);
 }
 
-void Portal2D::Renderer::DrawFloor(const Portal2D::Camera &camera, float x0, float y0, float x1, float y1, float z, Portal2D::Color color, bool is_floor) {
-    const float scale = this->screen_height * 0.5f;
+void Portal2D::Renderer::DrawFloor(const Portal2D::Entity &camera, float x0, float y0, float x1, float y1, float z, Portal2D::Color color, bool is_floor) {
+    const float scale = this->screen_width * 0.5f;
     
     float quad_x0 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y0 = scale + ((scale * z) / y0);
+    float quad_y0 = this->screen_height * 0.5f + ((scale * z) / y0);
     
     float quad_x1 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y1 = scale + ((scale * z) / y1);
+    float quad_y1 = this->screen_height * 0.5f + ((scale * z) / y1);
     
     float quad_x2 = (x1 / y1 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y2 = (is_floor ? this->screen_height * 2.0f : -this->screen_height);
+    float quad_y2 = (is_floor ? (this->screen_height * 10.0f) : (-9.0f * this->screen_height));
     
     float quad_x3 = (x0 / y0 + 1.0f) * this->screen_width * 0.5f;
-    float quad_y3 = (is_floor ? this->screen_height * 2.0f : -this->screen_height);
+    float quad_y3 = (is_floor ? (this->screen_height * 10.0f) : (-9.0f * this->screen_height));
     
     const SDL_Color sdl_color = {
         (int)(std::min(std::max(color.red, 0.0f), 255.0f)),
@@ -167,16 +167,17 @@ void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0
     }
 }
 
-void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Camera &camera, float clip_l, float clip_r) {
+void Portal2D::Renderer::DrawEntity(const Portal2D::Entity &entity, float s, float z) {
+    // TODO
+}
+
+void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Entity &camera, float clip_l, float clip_r) {
     float cos_angle = cosf(camera.angle);
     float sin_angle = sinf(camera.angle);
     
     // FIRST PASS: reorder walls using their midpoint (after clipping).
     
     std::vector<std::pair<float, int>> wall_ys(room.walls.size());
-    
-    // TODO: leave figuring out a structure to reuse calculated values
-    // for tomorrow, I'm tired :p.
     
     for (int i = 0; i < room.walls.size(); i++) {
         const Portal2D::Wall &wall = room.walls[i];
@@ -296,18 +297,43 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Ca
         // working, the code below does the actual rendering with SDL2.
         
         if (wall.link == nullptr) {
-            this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z, room.height_z, wall_l, wall_r, 0.0f, shade);
+            this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, (camera.point_z + camera.view_z), room.height_z, wall_l, wall_r, 0.0f, shade);
         } else {
             this->DrawRoom(*(wall.link), camera, view_x0, view_x1);
             
             if (wall.link->height_z < room.height_z) {
                 float wall_d = fmodf(wall.link->height_z, 1.0f);
-                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, camera.point_z - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r, wall_d, shade);
+                this->DrawWall(wall, x0_r, y0_r, x1_r, y1_r, (camera.point_z + camera.view_z) - wall.link->height_z, room.height_z - wall.link->height_z, wall_l, wall_r, wall_d, shade);
             }
         }
         
-        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z, room.f_color, true);
-        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, camera.point_z - room.height_z, room.c_color, false);
+        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, (camera.point_z + camera.view_z), room.f_color, true);
+        this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, (camera.point_z + camera.view_z) - room.height_z, room.c_color, false);
+    }
+    
+    // THIRD PASS: now, render all entities.
+    
+    for (Portal2D::Entity *entity : room.entities) {
+        // (x, y) defines the entity as it exists.
+        
+        float x = entity->point_x - camera.point_x;
+        float y = entity->point_y - camera.point_y;
+        
+        // (x_r, y_r) defines the entity after its rotation.
+        
+        float x_r = x * cos_angle - y * sin_angle;
+        float y_r = x * sin_angle + y * cos_angle;
+        
+        // Skip rendering if it is behind the camera.
+        
+        if (y_r <= 0.0f) {
+            continue;
+        }
+        
+        // Do the magic!
+        
+        const float s = x_r / y_r;
+        this->DrawEntity(*entity, s, (camera.point_z + camera.view_z) - entity->point_z);
     }
 }
 

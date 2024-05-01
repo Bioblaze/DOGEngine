@@ -7,7 +7,7 @@
 #include "Core/Logger.h" 
 #include "Editor/BuildSystem.h"
 #include "Portal2D/Renderer.h"
-#include "Portal2D/Camera.h"
+#include "Portal2D/Entity.h"
 #include "Portal2D/Room.h"
 #include "Portal2D/Wall.h"
 #include "imgui.h"
@@ -49,23 +49,24 @@ int main(int argc, char* args[])
     my_room_2.f_color = {255.0f, 170.0f, 85.0f};
     my_room_2.c_color = {85.0f, 170.0f, 255.0f};
 
-    Portal2D::Camera my_camera = {&my_room_1, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
+    Portal2D::Entity my_camera = {&my_room_1, 0.125f, 1.0f, 0.7f, -1, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
+    my_room_1.entities.insert(&my_camera);
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);
         bool running = true;
         SDL_Event event;
 
-        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 1024, 1024);
+        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 32, 32);
         uint8_t test_pixels[1048576];
 
-        for (int i = 0; i < 1024; i++) {
-            for (int j = 0; j < 1024; j++) {
-                test_pixels[j + i * 1024] = (i ^ j) ^ ((i ^ j) >> 8);
+        for (int i = 0; i < 32; i++) {
+            for (int j = 0; j < 32; j++) {
+                test_pixels[j + i * 32] = ((i << 3) ^ j) ^ (i ^ (j << 3));
             }
         }
 
-        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 1024);
+        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 32);
         renderer.PushTexture(0, test_sdl_texture);
 
         std::map<int, bool> sdl_keys;
@@ -82,6 +83,7 @@ int main(int argc, char* args[])
             }
 
 
+            SDL_GetWindowSize(renderer.GetSDLWindow(), &renderer.screen_width, &renderer.screen_height);
             renderer.BeginFrame(); // Prepare renderer for drawing 2D content
 
             renderer.DrawRoom(*(my_camera.room), my_camera, -1.0f, 1.0f); // Render the 3D view
