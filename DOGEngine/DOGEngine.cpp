@@ -56,16 +56,16 @@ int main(int argc, char* args[])
         bool running = true;
         SDL_Event event;
 
-        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 1024, 1024);
+        SDL_Texture *test_sdl_texture = SDL_CreateTexture(renderer.GetSDLRenderer(), SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STATIC, 32, 32);
         uint8_t test_pixels[1048576];
 
-        for (int i = 0; i < 1024; i++) {
-            for (int j = 0; j < 1024; j++) {
-                test_pixels[j + i * 1024] = (i ^ j) ^ ((i ^ j) >> 8);
+        for (int i = 0; i < 32; i++) {
+            for (int j = 0; j < 32; j++) {
+                test_pixels[j + i * 32] = ((i << 3) ^ j) ^ (i ^ (j << 3));
             }
         }
 
-        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 1024);
+        SDL_UpdateTexture(test_sdl_texture, NULL, test_pixels, 32);
         renderer.PushTexture(0, test_sdl_texture);
 
         std::map<int, bool> sdl_keys;
