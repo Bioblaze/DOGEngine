@@ -18,6 +18,106 @@ void Portal2D::Camera::Update() {
         const Portal2D::Wall &wall = this->room->walls[i];
         auto j = (i + 1) % this->room->walls.size();
         
+        if (wall.link != nullptr) {
+            continue;
+        }
+        
+        // (x0, y0) - (x1, y1) defines the wall as it exists.
+        
+        const float x0 = wall.point_x;
+        const float y0 = wall.point_y;
+        
+        const float x1 = this->room->walls[j].point_x;
+        const float y1 = this->room->walls[j].point_y;
+        
+        // (nx, ny) defines the inner normal of the wall.
+        
+        const float wall_length = sqrtf((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+        
+        const float nx = (y1 - y0) / wall_length;
+        const float ny = (x0 - x1) / wall_length;
+        
+        // (px0, py0) - (px1, py1) defines the wall with the
+        // camera radius compensation added in.
+        
+        const float px0 = x0 + nx * radius;
+        const float py0 = y0 + ny * radius;
+        
+        const float px1 = x1 + nx * radius;
+        const float py1 = y1 + ny * radius;
+        
+        // A and B are scalars that indicate where in the lines
+        // intersections occurred.
+        
+        const float d = (px0 - px1) * (y2 - y3) - (py0 - py1) * (x2 - x3);
+        
+        if (d == 0.0f) {
+            continue;
+        }
+        
+        const float a = ((px0 - x2) * (y2 - y3) - (py0 - y2) * (x2 - x3)) / d;
+        const float b = ((px0 - x2) * (py0 - py1) - (py0 - y2) * (px0 - px1)) / d;
+        
+        // Discard interaction if we just did not collide.
+        
+        if (b < 0.0f || b > 1.0f) {
+            continue;
+        }
+        
+        // Treat line-line and line-circle collisions separately
+        // from now on.
+        
+        if (a < 0.0f) {
+            const float t0 = x2 * x2 - x0 * x2 - x2 * x3 + x0 * x3 + y2 * y2 - y0 * y2 - y2 * y3 + y0 * y3;
+            const float t1 = 2.0f * (x2 * x3 + y2 * y3) - x2 * x2 - x3 * x3 - y2 * y2 - y3 * y3;
+            const float t2 = 2.0f * (x0 * x2 + y0 * y2) + radius * radius - x0 * x0 - x2 * x2 - y0 * y0 - y2 * y2;
+            
+            if (t1 == 0.0f || t0 * t0 < t1 * t2) {
+                continue;
+            }
+            
+            const float c = (sqrtf(t0 * t0 - t1 * t2) - t0) / t1;
+            
+            if (c < 0.0f || c > 1.0f) {
+                continue;
+            }
+            
+            x3 = x2 + (x3 - x2) * (c - 0.001f);
+            y3 = y2 + (y3 - y2) * (c - 0.001f);
+        } else if (a > 1.0f) {
+            const float t0 = x2 * x2 - x1 * x2 - x2 * x3 + x1 * x3 + y2 * y2 - y1 * y2 - y2 * y3 + y1 * y3;
+            const float t1 = 2.0f * (x2 * x3 + y2 * y3) - x2 * x2 - x3 * x3 - y2 * y2 - y3 * y3;
+            const float t2 = 2.0f * (x1 * x2 + y1 * y2) + radius * radius - x1 * x1 - x2 * x2 - y1 * y1 - y2 * y2;
+            
+            if (t1 == 0.0f || t0 * t0 < t1 * t2) {
+                continue;
+            }
+            
+            const float c = (sqrtf(t0 * t0 - t1 * t2) - t0) / t1;
+            
+            if (c < 0.0f || c > 1.0f) {
+                continue;
+            }
+            
+            x3 = x2 + (x3 - x2) * (c - 0.001f);
+            y3 = y2 + (y3 - y2) * (c - 0.001f);
+        } else {
+            const float dot = nx * (x2 - x3) + ny * (y2 - y3);
+            const float p = (1.0f - b) * dot;
+            
+            x3 = x3 + nx * (p + 0.001f);
+            y3 = y3 + ny * (p + 0.001f);
+        }
+    }
+    
+    for (auto i = 0; i < this->room->walls.size(); i++) {
+        const Portal2D::Wall &wall = this->room->walls[i];
+        auto j = (i + 1) % this->room->walls.size();
+        
+        if (wall.link == nullptr) {
+            continue;
+        }
+        
         // (x0, y0) - (x1, y1) defines the wall as it exists.
         
         const float x0 = wall.point_x;
@@ -39,56 +139,21 @@ void Portal2D::Camera::Update() {
         const float b = ((x0 - x2) * (y0 - y1) - (y0 - y2) * (x0 - x1)) / d;
         
         // Discard interaction if we collided just with the wall
-        // line, and not with the actual segment.
+        // line, and not with the actual segment, or if we just
+        // did not collide.
         
         if (a < 0.0f || a > 1.0f) {
             continue;
         }
         
-        // Now, let the magic begin!
-        
-        if (wall.link == nullptr) {
-            // We want the normal, so we invert the components and negate
-            // one of them.
-            
-            const float n_length = sqrtf((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
-            const float d_length = sqrtf((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
-            
-            const float nx = (y1 - y0) / n_length;
-            const float ny = (x0 - x1) / n_length;
-            
-            const float dx = (x3 - x2) / d_length;
-            const float dy = (y3 - y2) / d_length;
-            
-            if (n_length == 0.0f || d_length == 0.0f) {
-                continue;
-            }
-            
-            const float cos_angle = nx * dx + ny * dy;
-            
-            if (cos_angle == 0.0f) {
-                continue;
-            }
-            
-            const float d_radius = radius / cos_angle;
-            const float b_radius = d_radius / d_length;
-            
-            const float b_final = b - b_radius;
-            
-            if (b < 0.0f || b > 1.0f) {
-                continue;
-            }
-            
-            x3 = x2 + (x3 - x2) * b_final;
-            y3 = y2 + (y3 - y2) * b_final;
-        } else {
-            if (b < 0.0f || b > 1.0f) {
-                continue;
-            }
-            
-            this->room = wall.link;
-            break;
+        if (b < 0.0f || b > 1.0f) {
+            continue;
         }
+        
+        // Switch to the new room we are in!
+        
+        this->room = wall.link;
+        break;
     }
     
     this->old_point_x = this->point_x = x3;
