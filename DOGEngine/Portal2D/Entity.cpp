@@ -156,6 +156,9 @@ void Portal2D::Entity::Update() {
         
         // Switch to the new room we are in!
         
+        this->room->entities.erase(this);
+        wall.link->entities.insert(this);
+        
         this->room = wall.link;
         break;
     }

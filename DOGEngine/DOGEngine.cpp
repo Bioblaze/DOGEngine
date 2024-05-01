@@ -50,6 +50,7 @@ int main(int argc, char* args[])
     my_room_2.c_color = {85.0f, 170.0f, 255.0f};
 
     Portal2D::Entity my_camera = {&my_room_1, 0.125f, 1.0f, 0.7f, -1, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
+    my_room_1.entities.insert(&my_camera);
 
     try {
         Portal2D::Renderer renderer("Hello World", 800, 600);

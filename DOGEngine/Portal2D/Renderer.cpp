@@ -167,6 +167,10 @@ void Portal2D::Renderer::DrawWall(const Portal2D::Wall &wall, float x0, float y0
     }
 }
 
+void Portal2D::Renderer::DrawEntity(const Portal2D::Entity &entity, float s, float z) {
+    // TODO
+}
+
 void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::Entity &camera, float clip_l, float clip_r) {
     float cos_angle = cosf(camera.angle);
     float sin_angle = sinf(camera.angle);
@@ -174,9 +178,6 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::En
     // FIRST PASS: reorder walls using their midpoint (after clipping).
     
     std::vector<std::pair<float, int>> wall_ys(room.walls.size());
-    
-    // TODO: leave figuring out a structure to reuse calculated values
-    // for tomorrow, I'm tired :p.
     
     for (int i = 0; i < room.walls.size(); i++) {
         const Portal2D::Wall &wall = room.walls[i];
@@ -308,6 +309,31 @@ void Portal2D::Renderer::DrawRoom(const Portal2D::Room &room, const Portal2D::En
         
         this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, (camera.point_z + camera.view_z), room.f_color, true);
         this->DrawFloor(camera, clip_x0, clip_y0, clip_x1, clip_y1, (camera.point_z + camera.view_z) - room.height_z, room.c_color, false);
+    }
+    
+    // THIRD PASS: now, render all entities.
+    
+    for (Portal2D::Entity *entity : room.entities) {
+        // (x, y) defines the entity as it exists.
+        
+        float x = entity->point_x - camera.point_x;
+        float y = entity->point_y - camera.point_y;
+        
+        // (x_r, y_r) defines the entity after its rotation.
+        
+        float x_r = x * cos_angle - y * sin_angle;
+        float y_r = x * sin_angle + y * cos_angle;
+        
+        // Skip rendering if it is behind the camera.
+        
+        if (y_r <= 0.0f) {
+            continue;
+        }
+        
+        // Do the magic!
+        
+        const float s = x_r / y_r;
+        this->DrawEntity(*entity, s, (camera.point_z + camera.view_z) - entity->point_z);
     }
 }
 
